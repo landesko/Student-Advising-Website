@@ -103,7 +103,6 @@
           //var_dump($apptTimeInfo);
           //var_dump($apptTimeInfo[1][2]);
           
-            
             foreach ($apptTimeInfo as $timeInfo) {
 
               // time
@@ -112,11 +111,15 @@
 
                 // get appt info
               $t = $timeInfo[0];
+              echo "$timeInfo[0]<br>";
+
+              //var_dump($timeInfo[0]);
+
               $apptInfoSql = "SELECT * FROM `appointments` WHERE `apptNum` = '$t'";
               $rs = $COMMON->executeQuery($apptInfoSql,$_SERVER["SCRIPT_NAME"]);
               
               // store appt info in a 2D array
-              $apptInfo;
+              $apptInfo=null;
               $count = 0;
               while($row = mysql_fetch_row($rs)){
                 $apptInfo[$count] = $row;
@@ -124,15 +127,23 @@
               }
 
 
-              //var_dump($apptInfo);
-              var_dump($apptInfo[1]);
+              if($apptInfo==null)
+                break;
+              //var_dump($apptInfo[0]);
+              //var_dump($apptInfo[1]);
 
               foreach ($advisorInfo as $advisor) {
                 
+                echo "loop advisor $advisor[1] ID: $advisor[0]<br>";
+
                  foreach ($apptInfo as $appt) {
 
+                echo "loop appt. ID: $appt[2]<br> ";
+                  //echo "$appt[0]<br>";
+ 
                     // check if id match
-                    if($appt[2] == $advisor[0] ){
+                    if($appt[2] == $advisor[0]){
+                        echo "ID Matches. $appt[2] $advisor[0]<br>";
 
                       if($appt[3] == 1){
                         echo "<td>Open</td>";
