@@ -73,6 +73,7 @@
             $debug = true;
 
             $COMMON = new Common($debug);
+
             $sql = "SELECT `time` TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate`";
             $result = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
 
