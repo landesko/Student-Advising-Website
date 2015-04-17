@@ -1,7 +1,6 @@
 <html>
 
 <head>
-
 <title>UMBC Advisor Console</title>
 
     <!-- Latest compiled and minified CSS -->
@@ -12,6 +11,9 @@
 
   <!-- Custom styles for sign in -->
   <link href="css/signin.css" rel="stylesheet">
+
+  <!-- Main Style -->
+  <link href="css/main.css" rel="stylesheet">
 
 </head>
 
