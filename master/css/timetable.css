@@ -1,0 +1,14 @@
+    
+    /* event table hover */
+    #advisorSlot:hover
+    {
+        cursor: pointer;
+        color: red;
+    }
+
+    td{
+        background: #009999;
+    }
+
+
+
