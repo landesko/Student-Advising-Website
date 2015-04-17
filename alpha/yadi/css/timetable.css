@@ -1,13 +1,15 @@
     
-    /* event table hover */
-    #advisorSlot:hover
-    {
-        cursor: pointer;
-        color: red;
+    #advisorClose{
+        background: #009999;
     }
 
-    td{
-        background: #009999;
+    #advisorSlotOpen:hover{
+        cursor: pointer;
+        color: red
+    }
+
+    #advisorSlotClose{
+        background: #002222;
     }
 
 

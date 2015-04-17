@@ -68,32 +68,9 @@
        
         <?php
 
-            $time = 9;
+            include()
 
-            $printTime;
-            $timeSuffix;
-            $am = "  am";
-            $pm = "  pm";
-            $suffix = $am;
-            
             for ($i= 0; $i < 15; $i++) { 
-
-                if ($i % 2 == 0) {
-                    $timeSuffix = ":30";
-                }
-                else{
-                    $timeSuffix = ":00";
-                }
-
-                if($time>12){
-                    $printTime = $time - 12;
-                    $suffix = $pm;
-                }
-                else{
-                    $printTime = $time;
-                    $suffix = $am;
-                }
-
 
                 // set class info/success/warn based on 
 
@@ -102,13 +79,17 @@
                     echo "<td>$printTime$timeSuffix$suffix</td>";
 
                     // echo info here
-                        echo "<td id='advisorSlot'>Open</td>";
-                        echo "<td id='advisorSlot'>Close</td>";
-                        echo "<td id='advisorSlot'>Open</td>";
+                    echo "<td id='advisorOpen'>Open</td>";
+                    echo "<td id='advisorOpen'>Close</td>";
+                    echo "<td id='advisorOpen'>Open</td>";
                 
                 echo "</tr>";
 
-                $time++;
+                $count++;   
+
+                if ($i % 2 == 0) {
+                    $time++;
+                }
             }
         ?>
 
@@ -116,13 +97,6 @@
   </table>
 </div>
  <!-- /container -->
-
-
- <?php
-    echo "";
-
- ?>
-
 
 <!-- Load javascript required for Bootstrap animation-->
 <script src="https://code.jquery.com/jquery.js"></script>
