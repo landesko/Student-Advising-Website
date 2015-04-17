@@ -67,62 +67,45 @@
     <tbody>
        
         <?php
+            $sqlDate = "2015-03-02";
 
-            $time = 9;
+            include('CommonMethods.php');
+            $debug = true;
 
-            $printTime;
-            $timeSuffix;
-            $am = "  am";
-            $pm = "  pm";
-            $suffix = $am;
-            
-            for ($i= 0; $i < 15; $i++) { 
+            $COMMON = new Common($debug);
+            $sql = "SELECT `time` TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate`";
+            $result = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
 
-                if ($i % 2 == 0) {
-                    $timeSuffix = ":30";
-                }
-                else{
-                    $timeSuffix = ":00";
-                }
+            var_dump($result);
 
-                if($time>12){
-                    $printTime = $time - 12;
-                    $suffix = $pm;
-                }
-                else{
-                    $printTime = $time;
-                    $suffix = $am;
-                }
-
+            /*
+            //for ($i= 0; $i < 15; $i++) { 
 
                 // set class info/success/warn based on 
-
                 echo "<tr class='info'>";
 
                     echo "<td>$printTime$timeSuffix$suffix</td>";
 
                     // echo info here
-                        echo "<td id='advisorSlot'>Open</td>";
-                        echo "<td id='advisorSlot'>Close</td>";
-                        echo "<td id='advisorSlot'>Open</td>";
+                    echo "<td id='advisorOpen'>Open</td>";
+                    echo "<td id='advisorOpen'>Close</td>";
+                    echo "<td id='advisorOpen'>Open</td>";
                 
                 echo "</tr>";
 
-                $time++;
+                $count++;   
+
+                if ($i % 2 == 0) {
+                    $time++;
+                }
             }
+            */
         ?>
 
     </tbody>
   </table>
 </div>
  <!-- /container -->
-
-
- <?php
-    echo "";
-
- ?>
-
 
 <!-- Load javascript required for Bootstrap animation-->
 <script src="https://code.jquery.com/jquery.js"></script>
