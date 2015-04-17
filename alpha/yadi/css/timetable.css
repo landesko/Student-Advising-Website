@@ -1,35 +1,14 @@
     
-     /* time table */
-    th,td
-    {
-        margin: 0;
-        text-align: center;
-        border-collapse: collapse;
-        outline: 1px solid #E8EBEB;
-    }
-
-    /* time table */
-    th
-    {
-        background: #66635F;
-        color: white;
-        padding: 1%  2%;  
-
-    }
-
-    /* event table */
-    td
-    {
-        padding: 1% 2%;
-        font-weight: bold;
-        color: red;
-    }
-    
     /* event table hover */
-    td:hover
+    #advisorSlot:hover
     {
         cursor: pointer;
-        background: #000000 ;
-        color: white;
+        color: red;
     }
+
+    td{
+        background: #009999;
+    }
+
+
 
