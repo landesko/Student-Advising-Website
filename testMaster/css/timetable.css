@@ -1,14 +1,14 @@
     
-    #advisorClose{
-        background: #009999;
+    .advisorSlotOpen{
+        background: #7FFA66;
     }
 
-    #advisorSlotOpen:hover{
+    .advisorSlotOpen:hover{
         cursor: pointer;
-        color: red
+        color: red;
     }
 
-    #advisorSlotClose{
+    .advisorSlotClose{
         background: #002222;
     }
 
