@@ -1,3 +1,8 @@
+<?php
+
+session_start();
+?>
+
 <html>
 
 <head>
@@ -14,6 +19,8 @@
 
   <!-- Main Style -->
   <link href="css/main.css" rel="stylesheet">
+  
+  <link rel="icon" type="image/png" href="icon.png" />
 
 </head>
 
@@ -34,7 +41,7 @@
             
     </div>
 
-    <h1>CMEE Student Advising Web Page</h1>
+    <h2>CMEE Student Advising Web Page</h2>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
    <!-- <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">

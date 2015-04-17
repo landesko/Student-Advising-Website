@@ -1,3 +1,8 @@
+<?php
+
+session_start();
+?>
+
 <html>
 <head>
     <title>UMBC Advisor Console</title>
@@ -7,9 +12,8 @@
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
-</head>
-
-  <!-- Custom style for sign in -->
+    
+    <!-- Custom style for sign in -->
   <link href="css/signin.css" rel="stylesheet">
 
    <!-- Main Style -->
@@ -17,6 +21,10 @@
 
    <!-- Timetable Style -->
   <link href="css/timetable.css" rel="stylesheet">
+    
+    <link rel="icon" type="image/png" href="icon.png" />
+</head>
+
 
 <body>
 
@@ -34,17 +42,17 @@
             <img class="navbar-brand"  src="res/logo.png" >
                 
         </div>
-         <h1>CMEE Student Advising Web Page</h1>
+         <h2>CMEE Student Advising Web Page</h2>
     </div>
   </nav>
 
      <!--Sign In-->
    <div class="container">
-    <table class="table">
+    <table class="table" border="1">
    
     <thead>
       <tr>
-        <th>Time</th>
+        <th class="warning">Time</th>
 
     <!--  echo advisor names in th tag here-->
         <?php
@@ -59,6 +67,7 @@
 
 
           $advisorInfo;
+		  $advisorID;
           $count = 0;
           while($row = mysql_fetch_row($rs)){
             $advisorInfo[$count] = $row;
@@ -66,9 +75,10 @@
           }
             // advisor names
             for ($i= 0; $i < $count; $i++) { 
-                echo "<th>";
+                echo "<th class='warning'>";
                 //echo advisor name
                 $name = $advisorInfo[$i][2];
+				$advisorID[$i] = $advisorInfo[$i][0];
                 echo "$name";
                 echo "</th>";
             }
@@ -85,6 +95,8 @@
 
         <?php
             // date('w',srttotime());
+			
+			$advisingArray = array();
 
             $sqlDate = "2015-03-02";
 
@@ -102,118 +114,70 @@
 
           //var_dump($apptTimeInfo);
           //var_dump($apptTimeInfo[1][2]);
+		  
+		  echo("<form class='formm-signin' action='added.php' method='post' name='Form1'>"); 
+		  
+		  $rowColor = 0; 
           
             foreach ($apptTimeInfo as $timeInfo) {
 
               // time
+			  if($rowColor % 3 == 0)
+			  {
               echo "<tr class='info'>";
+			  }
+			  else if($rowColor % 3 == 1)
+			  {
+              echo "<tr class='danger'>";
+			  }
+			   else if($rowColor % 3 == 2)
+			  {
+              echo "<tr class='success'>";
+			  }
               echo "<td>$timeInfo[2]</td>";
 
                 // get appt info
-              $t = $timeInfo[0];
-              echo "$timeInfo[0]<br>";
-
-              //var_dump($timeInfo[0]);
-
-              $apptInfoSql = "SELECT * FROM `appointments` WHERE `apptNum` = '$t'";
-              $rs = $COMMON->executeQuery($apptInfoSql,$_SERVER["SCRIPT_NAME"]);
-              
-              // store appt info in a 2D array
-              $apptInfo=null;
-              $count = 0;
-              while($row = mysql_fetch_row($rs)){
-                $apptInfo[$count] = $row;
-                $count++;
-              }
-
-
-              // no appointments at this day&&time
-              if($apptInfo==null)
-                continue;
-              //var_dump($apptInfo[0]);
-              //var_dump($apptInfo[1]);
-
-              foreach ($advisorInfo as $advisor) {
-                 foreach ($apptInfo as $appt) {
-                    // check if id match
-                    if($appt[2] == $advisor[0]){
-                      if($appt[3] == 1){
-                        echo "<td>Open</td>";
-                      } 
-                      else
-                        echo "<td>Close</td>";
-                    }
-                  }
-              }             
-              
+              $apptNum = $timeInfo[0];
+			  
+			  for($i = 0; $i<count($advisorID); $i++)
+			  {
+				  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND `open` = 1";
+				  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
+				  $apptAvailable = mysql_fetch_row($rs);
+				  
+				  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]'";
+				  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
+				  $isGroup = mysql_fetch_row($rs);
+				  //echo "$row";
+				  if($apptAvailable[0] >= 1)
+				  {
+				  	if($isGroup[0] > 1)
+					{
+						echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";
+					}
+					else
+					{
+						echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Single - Open</label></td>";
+					}
+				  }
+				  else
+				  {
+					echo"<td></td>";
+				  }
+				  
+			  }
+			  	$rowColor++;
                 echo "</tr>"; 
             }
+		
 
 
-
-            /*
-            $sqlApptNum = "SELECT `apptNum` FROM `apptTimes` WHERE `date` = '$sqlDate'";
-            $apptNumArray = $COMMON->executeQuery($sqlApptNum,$_SERVER["SCRIPT_NAME"]);
-            //1-14
-
-            $advisors = "SELECT `advisorID` from `advisors` WHERE 1";
-            $advisorArray = $COMMON->executeQuery($advisors,$_SERVER["SCRIPT_NAME"]);
-
-            while($advisorName = mysql_fetch_row($advisorArray))
-            {
-
-            }
-
-            $adv1 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
-            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
-            $adv2 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
-            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
-            $adv3 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
-            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
-            $adv4 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
-            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
-
-
-            while ($row = mysql_fetch_row($apptNum)) {
-                echo "<tr class='info'>";
-                $adv1 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
-                $adv2 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'AA12345`";
-                $adv3 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'ES12345`";
-                $adv4 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'CB12345`";
-                    echo "<td>$row[0]</td>";
-
-                echo "</tr>";   
-            }
-                */             
-
-
-            /*
-            //for ($i= 0; $i < 15; $i++) { 
-
-                // set class info/success/warn based on 
-                echo "<tr class='info'>";
-
-                    echo "<td>$printTime$timeSuffix$suffix</td>";
-
-                    // echo info here
-                    echo "<td id='advisorOpen'>Open</td>";
-                    echo "<td id='advisorOpen'>Close</td>";
-                    echo "<td id='advisorOpen'>Open</td>";
-                
-                echo "</tr>";
-
-                $count++;   
-
-                if ($i % 2 == 0) {
-                    $time++;
-                }
-            }
-            */
         ?>
-
     </tbody>
   </table>
+  <button class="btn btn-lg btn-primary" type="submit" >Submit</button></form> <br><br>
 </div>
+
  <!-- /container -->
 
 
@@ -222,6 +186,14 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function(){
+		$(".advisorSlotOpen").click(function(){
+			console.log("clicked");
+		});
+});
+</script>
 
 </body>
 </html>
