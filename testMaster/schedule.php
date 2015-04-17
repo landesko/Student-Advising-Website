@@ -127,31 +127,23 @@
               }
 
 
+              // no appointments at this day&&time
               if($apptInfo==null)
-                break;
+                continue;
               //var_dump($apptInfo[0]);
               //var_dump($apptInfo[1]);
 
               foreach ($advisorInfo as $advisor) {
-                
-                echo "loop advisor $advisor[1] ID: $advisor[0]<br>";
-
                  foreach ($apptInfo as $appt) {
-
-                echo "loop appt. ID: $appt[2]<br> ";
-                  //echo "$appt[0]<br>";
- 
                     // check if id match
                     if($appt[2] == $advisor[0]){
-                        echo "ID Matches. $appt[2] $advisor[0]<br>";
-
                       if($appt[3] == 1){
                         echo "<td>Open</td>";
                       } 
                       else
                         echo "<td>Close</td>";
                     }
-                }
+                  }
               }             
               
                 echo "</tr>"; 
