@@ -49,15 +49,31 @@
     <!--  echo advisor names in th tag here-->
         <?php
 
-            for ($i= 0; $i < 3; $i++) { 
-               
-                echo "<th>";
-                
-                //echo advisor name
-                echo "advisor";
+            include('CommonMethods.php');
+            $debug = false;
 
+            $COMMON = new Common($debug);
+
+          $advisorSql = "SELECT * FROM `advisors` WHERE 1";
+          $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
+
+
+          $advisorInfo;
+          $count = 0;
+          while($row = mysql_fetch_row($rs)){
+            $advisorInfo[$count] = $row;
+            $count++;
+          }
+            // advisor names
+            for ($i= 0; $i < $count; $i++) { 
+                echo "<th>";
+                //echo advisor name
+                $name = $advisorInfo[$i][2];
+                echo "$name";
                 echo "</th>";
             }
+
+            //var_dump($advisorInfo);
         ?>
 
       </tr>
@@ -66,18 +82,107 @@
     <!--  echo advisor names in th tag here-->
     <tbody>
        
+
         <?php
+            // date('w',srttotime());
+
             $sqlDate = "2015-03-02";
 
-            include('CommonMethods.php');
-            $debug = true;
+          // time info
+          $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
+          $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
+          $apptTimeInfo;
+          $count = 0;
+          while($row = mysql_fetch_row($rs)){
+            $apptTimeInfo[$count] = $row;
+            $count++;
+          }
 
-            $COMMON = new Common($debug);
 
-            $sql = "SELECT `time` TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate`";
-            $result = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
 
-            var_dump($result);
+          //var_dump($apptTimeInfo);
+          //var_dump($apptTimeInfo[1][2]);
+          
+            
+            foreach ($apptTimeInfo as $timeInfo) {
+
+              // time
+              echo "<tr class='info'>";
+              echo "<td>$timeInfo[2]</td>";
+
+                // get appt info
+              $t = $timeInfo[0];
+              $apptInfoSql = "SELECT * FROM `appointments` WHERE `apptNum` = '$t'";
+              $rs = $COMMON->executeQuery($apptInfoSql,$_SERVER["SCRIPT_NAME"]);
+              
+              // store appt info in a 2D array
+              $apptInfo;
+              $count = 0;
+              while($row = mysql_fetch_row($rs)){
+                $apptInfo[$count] = $row;
+                $count++;
+              }
+
+
+              //var_dump($apptInfo);
+              var_dump($apptInfo[1]);
+
+              foreach ($advisorInfo as $advisor) {
+                
+                 foreach ($apptInfo as $appt) {
+
+                    // check if id match
+                    if($appt[2] == $advisor[0] ){
+
+                      if($appt[3] == 1){
+                        echo "<td>Open</td>";
+                      } 
+                      else
+                        echo "<td>Close</td>";
+                    }
+                }
+              }             
+              
+                echo "</tr>"; 
+            }
+
+
+
+            /*
+            $sqlApptNum = "SELECT `apptNum` FROM `apptTimes` WHERE `date` = '$sqlDate'";
+            $apptNumArray = $COMMON->executeQuery($sqlApptNum,$_SERVER["SCRIPT_NAME"]);
+            //1-14
+
+            $advisors = "SELECT `advisorID` from `advisors` WHERE 1";
+            $advisorArray = $COMMON->executeQuery($advisors,$_SERVER["SCRIPT_NAME"]);
+
+            while($advisorName = mysql_fetch_row($advisorArray))
+            {
+
+            }
+
+            $adv1 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
+            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
+            $adv2 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
+            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
+            $adv3 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
+            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
+            $adv4 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
+            $apptReturnAdv1 = $COMMON->executeQuery($adv1,$_SERVER["SCRIPT_NAME"]);
+
+
+            while ($row = mysql_fetch_row($apptNum)) {
+                echo "<tr class='info'>";
+                $adv1 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'JA12345`";
+                $adv2 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'AA12345`";
+                $adv3 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'ES12345`";
+                $adv4 = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum` AND `advisorID` = 'CB12345`";
+                    echo "<td>$row[0]</td>";
+
+                echo "</tr>";   
+            }
+                */             
+
 
             /*
             //for ($i= 0; $i < 15; $i++) { 
@@ -107,6 +212,7 @@
   </table>
 </div>
  <!-- /container -->
+
 
 <!-- Load javascript required for Bootstrap animation-->
 <script src="https://code.jquery.com/jquery.js"></script>
