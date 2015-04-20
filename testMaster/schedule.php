@@ -59,6 +59,30 @@ session_start();
   <?php
 
     $date = ($_POST['date']);
+	$_SESSION['date'] = $date;
+	
+	$advisingArray = array();
+	
+	$fname = ($_POST['fname']);
+	$lname = ($_POST['lname']);
+	$studentID = ($_POST['studentID']);
+	$major = ($_POST['major']);
+		
+	if ( $fname == NULL)
+	{
+		$date = ($_SESSION['date']);
+		$fname = ($_SESSION['fname']);
+		$lname = ($_SESSION['lname']);
+		$studentID = ($_SESSION['studentID']);
+		$major = ($_SESSION['major']);
+	}
+	
+	
+	$_SESSION['studentID'] = $studentID;
+	$_SESSION['fname'] = $fname;
+	$_SESSION['lname'] = $lname;
+	$_SESSION['major'] = $major;
+	$_SESSION['date'] = $date;
 
     $sqlDate;
 
@@ -70,6 +94,8 @@ session_start();
       {
         $sqlDate = $date;
       }
+	  
+	echo("Welcome, $fname $lname, to the Student Advising Web Page<br><br>");
 
   echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
   ?>
@@ -127,21 +153,7 @@ session_start();
 
         <?php
             // date('w',srttotime());
-			
-			$advisingArray = array();
 
-            $fname = ($_POST['fname']);
-            $lname = ($_POST['lname']);
-            $studentID = ($_POST['studentID']);
-            $major = ($_POST['major']);
-			
-			$_SESSION['studentID'] = $studentID;
-			$_SESSION['fname'] = $fname;
-			$_SESSION['lname'] = $lname;
-			$_SESSION['major'] = $major;
-			$_SESSION['date'] = $date;
-
-            
           // time info
           $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
           $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
