@@ -12,6 +12,12 @@ session_start();
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+
+    <!-- -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/oneyoung/jquery-calendar/master/css/style.css" />
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/oneyoung/jquery-calendar/master/js/calendar.js"></script>
     
     <!-- Custom style for sign in -->
   <link href="css/signin.css" rel="stylesheet">
@@ -49,8 +55,28 @@ session_start();
   </nav>
   
   <div class="container">
-  <h3>The Stuff</h3>
+  <form action="schedule.php" method="post" name="Form1">
+  <?php
+
+    $date = ($_POST['date']);
+
+    $sqlDate;
+
+    if ($date == NULL)
+      {
+        $sqlDate = "2015-03-02";
+      }
+    else
+      {
+        $sqlDate = $date;
+      }
+
+  echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
+  ?>
+  <button class="btn btn-sm btn-primary" type="submit" >Go</button></form>
+  <br>
   </div>
+
 
      <!--Sign In-->
    <div class="container">
@@ -104,8 +130,11 @@ session_start();
 			
 			$advisingArray = array();
 
-            $sqlDate = "2015-03-02";
-
+            $fname = ($_POST['fname']);
+            $lname = ($_POST['lname']);
+            $ID = ($_POST['ID']);
+            $major = ($_POST['major']);
+            
           // time info
           $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
           $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
@@ -121,7 +150,7 @@ session_start();
           //var_dump($apptTimeInfo);
           //var_dump($apptTimeInfo[1][2]);
 		  
-		  echo("<form class='formm-signin' action='added.php' method='post' name='Form1'>"); 
+		  echo("<form class='formm-signin' action='added.php' method='post' name='Form2'>"); 
 		  
 		  $rowColor = 0; 
           
