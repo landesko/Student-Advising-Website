@@ -67,8 +67,7 @@ session_start();
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Home</a></li>
-            <li><a href="MySchedule.php">My Schedule</a></li>
+            <li><a href="advisorInfo.php">Advising Info</a></li>
             <li class="divider"></li>
             <li><a href="index.php">Log Out</a></li>
           </ul>
@@ -160,12 +159,38 @@ session_start();
 		  }
 		  
 		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br><br>");
+		
+		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		$getIsWeekDay = $COMMON->executeQuery($sqlIsWeekDay,$_SERVER["SCRIPT_NAME"]);
+		$fetchDay = mysql_fetch_row($getIsWeekDay);
+		
+		$sqlRange = "SELECT MAX(  DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) ) FROM  `apptTimes` WHERE 1 GROUP BY  `date`";
+		$rsGetRange = $COMMON->executeQuery($sqlRange,$_SERVER["SCRIPT_NAME"]);
+		$fetchRange = mysql_fetch_row($rsGetRange);
+		
+		$startDay = $fetchRange[0];
+		$endDay = "";
+		
+		while ($fetchRange = mysql_fetch_row($rsGetRange))
+		{
+			$endDay = $fetchRange[0];	
+		}
+		
+		if ($fetchDay[0] == NULL)
+		{
+			echo("You have not chosen a day when appointments are available. ");	
+		}
+		
+		echo("Please select an appointment by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
 	
 	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
 	  
-	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form>");
+	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form><br>");
+		echo("Once you have chosen a day please select an available appointment and then click Submit to make the appointment.<br>");
 	  	echo("<br></div>");
 	
+		if ($fetchDay[0] != NULL)
+		{
 	
 		 //<!--Sign In-->
 	  	echo("<div class='container'>
@@ -285,6 +310,7 @@ session_start();
 	
 			
 		echo("</tbody></table><button class='btn btn-lg btn-primary' type='submit' >Submit</button></form> <br><br>");
+		}
 	}
 	  ?>
 	</div>

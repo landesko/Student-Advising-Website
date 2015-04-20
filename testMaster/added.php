@@ -65,7 +65,7 @@ session_start();
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="MySchedule.php">My Schedule</a></li>
+            <li><a href="advisorInfo.php">Advising Info</a></li>
             <li class="divider"></li>
             <li><a href="index.php">Log Out</a></li>
           </ul>
