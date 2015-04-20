@@ -48,9 +48,20 @@ session_start();
             <img class="navbar-brand"  src="res/logo.png" >
                 
         </div>
-        <div class="titleBar">
-         <h2>CMEE Student Advising Web Page</h2>
-         </div>
+        <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="MySchedule.php">My Schedule</a></li>
+            <li class="divider"></li>
+            <li><a href="index.php">Log Out</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="titleBar">
+             <h2>CMEE Student Advising Web Page</h2>
+      </div>
     </div>
   </nav>
   
