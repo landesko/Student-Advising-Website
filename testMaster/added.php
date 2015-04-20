@@ -93,7 +93,7 @@ session_start();
 	$advisorID = $apptInfo[0];
 	$apptNum = $apptInfo[1];
 	
-	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `apptNum` = 1 AND `advisorID` = '$advisorID' LIMIT 1";
+	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `apptNum` = $apptNum AND `advisorID` = '$advisorID' LIMIT 1";
 	$rs1 = $COMMON->executeQuery($sqlAddAppt,$_SERVER["SCRIPT_NAME"]);
 	
 	$sqlAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$advisorID'";
