@@ -92,7 +92,7 @@ session_start();
 	$sqlAddStudent = "INSERT INTO `students`(`studentID`, `fname`, `lname`, `major`) VALUES ('$studentID','$fname','$lname','$major')";
 	$rs3 = $COMMON->executeQuery($sqlAddStudent,$_SERVER["SCRIPT_NAME"]);
 	
-	echo("Thank you, $fname $lname, for using the Student Advising Web Page. You have successfully made an appointment with $fetchAdvisorName[0] $fetchAdvisorName[1]");
+	echo("Thank you, $fname $lname, for using the Student Advising Web Page. You have successfully made an appointment with $fetchAdvisorName[0] $fetchAdvisorName[1].");
 
   
   ?>

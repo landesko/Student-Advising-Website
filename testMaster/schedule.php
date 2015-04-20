@@ -54,9 +54,15 @@ session_start();
     </div>
   </nav>
   
-  <div class="container">
-  <form action="schedule.php" method="post" name="Form1">
+  
   <?php
+  
+  	echo("<div class='container'>");
+  
+  	include('CommonMethods.php');
+	$debug = false;
+	
+	$COMMON = new Common($debug);
 
     $date = ($_POST['date']);
 	$_SESSION['date'] = $date;
@@ -85,152 +91,176 @@ session_start();
 	$_SESSION['date'] = $date;
 
     $sqlDate;
-
-    if ($date == NULL)
-      {
-        $sqlDate = "2015-03-02";
-      }
-    else
-      {
-        $sqlDate = $date;
-      }
-	  
-	echo("Welcome, $fname $lname, to the Student Advising Web Page<br><br>");
-
-  echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
-  ?>
-  <button class="btn btn-sm btn-primary" type="submit" >Go</button></form>
-  <br>
-  </div>
-
-
-     <!--Sign In-->
-   <div class="container">
-    <table class="table" border="1">
-   
-    <thead>
-      <tr>
-        <th class="warning">Time</th>
-
-    <!--  echo advisor names in th tag here-->
-        <?php
-
-            include('CommonMethods.php');
-            $debug = false;
-
-            $COMMON = new Common($debug);
-
-          $advisorSql = "SELECT * FROM `advisors` WHERE 1";
-          $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
-
-
-          $advisorInfo;
-		  $advisorID;
-          $count = 0;
-          while($row = mysql_fetch_row($rs)){
-            $advisorInfo[$count] = $row;
-            $count++;
-          }
-            // advisor names
-            for ($i= 0; $i < $count; $i++) { 
-                echo "<th class='warning'>";
-                //echo advisor name
-                $name = $advisorInfo[$i][2];
-				$advisorID[$i] = $advisorInfo[$i][0];
-                echo "$name";
-                echo "</th>";
-            }
-
-            //var_dump($advisorInfo);
-        ?>
-
-      </tr>
-    </thead>
-
-    <!--  echo advisor names in th tag here-->
-    <tbody>
-       
-
-        <?php
-            // date('w',srttotime());
-
-          // time info
-          $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
-          $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
-          $apptTimeInfo;
-          $count = 0;
-          while($row = mysql_fetch_row($rs)){
-            $apptTimeInfo[$count] = $row;
-            $count++;
-          }
-
-
-
-          //var_dump($apptTimeInfo);
-          //var_dump($apptTimeInfo[1][2]);
-		  
-		  echo("<form class='formm-signin' action='added.php' method='post' name='Form2'>"); 
-		  
-		  $rowColor = 0; 
-          
-            foreach ($apptTimeInfo as $timeInfo) {
-
-              // time
-			  if($rowColor % 3 == 0)
-			  {
-              echo "<tr class='info'>";
-			  }
-			  else if($rowColor % 3 == 1)
-			  {
-              echo "<tr class='danger'>";
-			  }
-			   else if($rowColor % 3 == 2)
-			  {
-              echo "<tr class='success'>";
-			  }
-              echo "<td>$timeInfo[2]</td>";
-
-                // get appt info
-              $apptNum = $timeInfo[0];
-			  
-			  for($i = 0; $i<count($advisorID); $i++)
-			  {
-				  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND `open` = 1";
-				  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
-				  $apptAvailable = mysql_fetch_row($rs);
-				  
-				  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]'";
-				  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
-				  $isGroup = mysql_fetch_row($rs);
-				  //echo "$row";
-				  if($apptAvailable[0] >= 1)
-				  {
-				  	if($isGroup[0] > 1)
-					{
-						echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";
-					}
-					else
-					{
-						echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Single - Open</label></td>";
-					}
-				  }
-				  else
-				  {
-					echo"<td></td>";
-				  }
-				  
-			  }
-			  	$rowColor++;
-                echo "</tr>"; 
-            }
+	
+	$madeAppt = "SELECT `studentID` FROM `appointments` WHERE `studentID` = '$studentID'";
+	$rsIsAppt = $COMMON->executeQuery($madeAppt,$_SERVER["SCRIPT_NAME"]);
+	$fetchIsAppt = mysql_fetch_row($rsIsAppt);
+	
+	if ( $fetchIsAppt != NULL)
+	{
+		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br>
+			You have already made an appointment with ");
+			
+			$getAppt = "SELECT `apptNum`, `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
+			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
+			$fetchGetAppt = mysql_fetch_row($rsGetAppt);
+			
+			$getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[1]'";
+			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
+			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
+			
+		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
+			$getApptTime = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ) FROM `apptTimes` WHERE `apptNum` = $fetchGetAppt[0]";
+			//var_dump($getApptTime);
+			$rsGetApptTime = $COMMON->executeQuery($getApptTime,$_SERVER["SCRIPT_NAME"]);
+			$fetchGetApptTime = mysql_fetch_row($rsGetApptTime);
+		
+		echo("$fetchGetApptTime[1] at $fetchGetApptTime[0]. If you need to cancel this appointment please click here.");
+	}
+	else
+	{
+		
+		echo("<form action='schedule.php' method='post' name='Form1'>");
 
-
-        ?>
-    </tbody>
-  </table>
-  <button class="btn btn-lg btn-primary" type="submit" >Submit</button></form> <br><br>
-</div>
+		if ($date == NULL)
+		  {
+			$sqlDate = "2015-03-02";
+		  }
+		else
+		  {
+			$sqlDate = $date;
+		  }
+		  
+		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br><br>");
+	
+	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
+	  
+	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form>");
+	  	echo("<br></div>");
+	
+	
+		 //<!--Sign In-->
+	  	echo("<div class='container'>
+		<table class='table' border='1'>
+	   
+		<thead>
+		  <tr>
+			<th class='warning'>Time</th>");
+	
+		//echo advisor names in th tag here
+				
+			  $advisorSql = "SELECT * FROM `advisors` WHERE 1";
+			  $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
+	
+	
+			  $advisorInfo;
+			  $advisorID;
+			  $count = 0;
+			  while($row = mysql_fetch_row($rs)){
+				$advisorInfo[$count] = $row;
+				$count++;
+			  }
+				// advisor names
+				for ($i= 0; $i < $count; $i++) { 
+					echo "<th class='warning'>";
+					//echo advisor name
+					$name = $advisorInfo[$i][2];
+					$advisorID[$i] = $advisorInfo[$i][0];
+					echo "$name";
+					echo "</th>";
+				}
+	
+				//var_dump($advisorInfo);
+			
+	
+			echo("  </tr>
+			</thead>
+		
+			<!--  echo advisor names in th tag here-->
+			<tbody>");
+		   
+	
+			
+				// date('w',srttotime());
+	
+			  // time info
+			  $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
+			  $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
+			  $apptTimeInfo;
+			  $count = 0;
+			  while($row = mysql_fetch_row($rs)){
+				$apptTimeInfo[$count] = $row;
+				$count++;
+			  }
+	
+	
+	
+			  //var_dump($apptTimeInfo);
+			  //var_dump($apptTimeInfo[1][2]);
+			  
+			  echo("<form class='formm-signin' action='added.php' method='post' name='Form2'>"); 
+			  
+			  $rowColor = 0; 
+			  
+				foreach ($apptTimeInfo as $timeInfo) {
+	
+				  // time
+				  if($rowColor % 3 == 0)
+				  {
+				  echo "<tr class='info'>";
+				  }
+				  else if($rowColor % 3 == 1)
+				  {
+				  echo "<tr class='danger'>";
+				  }
+				   else if($rowColor % 3 == 2)
+				  {
+				  echo "<tr class='success'>";
+				  }
+				  echo "<td>$timeInfo[2]</td>";
+	
+					// get appt info
+				  $apptNum = $timeInfo[0];
+				  
+				  for($i = 0; $i<count($advisorID); $i++)
+				  {
+					  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND `open` = 1";
+					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
+					  $apptAvailable = mysql_fetch_row($rs);
+					  
+					  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]'";
+					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
+					  $isGroup = mysql_fetch_row($rs);
+					  //echo "$row";
+					  if($apptAvailable[0] >= 1)
+					  {
+						if($isGroup[0] > 1)
+						{
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";
+						}
+						else
+						{
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Single - Open</label></td>";
+						}
+					  }
+					  else
+					  {
+						echo"<td></td>";
+					  }
+					  
+				  }
+					$rowColor++;
+					echo "</tr>"; 
+				}
+			
+	
+	
+			
+		echo("</tbody></table><button class='btn btn-lg btn-primary' type='submit' >Submit</button></form> <br><br>");
+	}
+	  ?>
+	</div>
 
  <!-- /container -->
 
