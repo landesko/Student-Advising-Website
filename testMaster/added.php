@@ -4,8 +4,21 @@ session_start();
 ?>
 
 <html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+
 <head>
-    <title>UMBC Advisor Console</title>
+<title>CMEE Advising Sign Up</title>
+<!-- ============================================================== -->
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Language" content="en-us" />
+<meta name="description" content="UMBC Advising" />
+<meta name="keywords" content="UMBC, Advising" />
+<!-- ============================================================== -->
 
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
@@ -52,7 +65,6 @@ session_start();
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="#">Home</a></li>
             <li><a href="MySchedule.php">My Schedule</a></li>
             <li class="divider"></li>
             <li><a href="index.php">Log Out</a></li>
