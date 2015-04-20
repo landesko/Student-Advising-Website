@@ -71,7 +71,7 @@ session_start();
         <label for="inputLname"  class="sr-only">Last Name</label>
         <input type="text" name = "lname" class="form-control" placeholder="Last Name"  autofocus>
         <label for="inputID"  class="sr-only">ID</label>
-        <input type="text" name = "ID" class="form-control" placeholder="ID"  autofocus>
+        <input type="text" name = "studentID" class="form-control" placeholder="Student ID"  autofocus>
         <label for="inputMajor"  class="sr-only">Major</label>
         <input type="text" name = "major" class="form-control" placeholder="Major"  autofocus>
         <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign in</button>

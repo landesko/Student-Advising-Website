@@ -132,8 +132,15 @@ session_start();
 
             $fname = ($_POST['fname']);
             $lname = ($_POST['lname']);
-            $ID = ($_POST['ID']);
+            $studentID = ($_POST['studentID']);
             $major = ($_POST['major']);
+			
+			$_SESSION['studentID'] = $studentID;
+			$_SESSION['fname'] = $fname;
+			$_SESSION['lname'] = $lname;
+			$_SESSION['major'] = $major;
+			$_SESSION['date'] = $date;
+
             
           // time info
           $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
