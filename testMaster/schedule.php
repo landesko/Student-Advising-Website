@@ -29,6 +29,8 @@ session_start();
   <link href="css/timetable.css" rel="stylesheet">
     
     <link rel="icon" type="image/png" href="icon.png" />
+    
+   
 </head>
 
 
@@ -48,9 +50,21 @@ session_start();
             <img class="navbar-brand"  src="res/logo.png" >
                 
         </div>
-        <div class="container-fluid">
-         <h2>CMEE Student Advising Web Page</h2>
-         </div>
+        <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="#">Home</a></li>
+            <li><a href="MySchedule.php">My Schedule</a></li>
+            <li class="divider"></li>
+            <li><a href="index.php">Log Out</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="titleBar">
+             <h2>CMEE Student Advising Web Page</h2>
+      </div>
+       
     </div>
   </nav>
   
@@ -225,11 +239,11 @@ session_start();
 				  
 				  for($i = 0; $i<count($advisorID); $i++)
 				  {
-					  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND `open` = 1";
+					  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND `open` = 1 AND (`major` IS NULL OR  `major` =  '$major')";
 					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
 					  $apptAvailable = mysql_fetch_row($rs);
 					  
-					  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]'";
+					  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND (`major` IS NULL OR  `major` =  '$major')";
 					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
 					  $isGroup = mysql_fetch_row($rs);
 					  //echo "$row";
