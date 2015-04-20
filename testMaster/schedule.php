@@ -42,9 +42,15 @@ session_start();
             <img class="navbar-brand"  src="res/logo.png" >
                 
         </div>
+        <div class="container-fluid">
          <h2>CMEE Student Advising Web Page</h2>
+         </div>
     </div>
   </nav>
+  
+  <div class="container">
+  <h3>The Stuff</h3>
+  </div>
 
      <!--Sign In-->
    <div class="container">
