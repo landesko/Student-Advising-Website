@@ -98,7 +98,7 @@ session_start();
 	$fname = ($_POST['fname']);
 	$lname = ($_POST['lname']);
 	$studentID = ($_POST['studentID']);
-	$major = ($_POST['major']);
+	$major = strtoupper(($_POST['major']));
 		
 	if ( $fname == NULL)
 	{
