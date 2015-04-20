@@ -1,10 +1,10 @@
 <?php
 echo("<html><head></head><body>");
 
-$debug = true;
+$debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
-var_dump($_POST);
+//var_dump($_POST);
 
 $advisor = ($_POST['advisor']);
 
@@ -15,14 +15,14 @@ $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 while($row = mysql_fetch_row($rs))
 {
      $advName=$row[1] . " " . $row[2];
-	 echo("<br><br>advisor: " . $advisor . " =? " . $advName);
+	 //echo("<br><br>advisor: " . $advisor . " =? " . $advName);
 	 if ($advName == $advisor){
-	 echo("<br>yup");
+	 //echo("<br>yup");
 		$advid = $row[0];
 	 }
 }
 
-echo("<br><br> advid: " . $advid . "<br><br>");
+//echo("<br><br> advid: " . $advid . "<br><br>");
 
 
 
@@ -148,8 +148,8 @@ echo($cdate);
 					$z=$cap[$k];
 					while ($z>0){
 						//$sql = "INSERT INTO `dalearn1`.`appointments` (`apptNum`, `studentID`, `advisorID`) VALUES ('$aptnum', NULL, '$advid');";
-						$sql = "INSERT INTO `dalearn1`.`appointments` (`apptNum`, `advisorID`) 
-						VALUES ('$aptnum', '$advid');";
+						$sql = "INSERT INTO `dalearn1`.`appointments` (`apptNum`, `advisorID`, `open`) 
+						VALUES ('$aptnum', '$advid', 1);";
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 						$z=$z-1;
 					}
