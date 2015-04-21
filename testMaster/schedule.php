@@ -118,10 +118,12 @@ session_start();
 
     $sqlDate;
 	
+	//checks to see if student already made an appointment
 	$madeAppt = "SELECT `studentID` FROM `appointments` WHERE `studentID` = '$studentID'";
 	$rsIsAppt = $COMMON->executeQuery($madeAppt,$_SERVER["SCRIPT_NAME"]);
 	$fetchIsAppt = mysql_fetch_row($rsIsAppt);
 	
+	//if student made the appointment a message is displayed detailing appt info
 	if ( $fetchIsAppt != NULL)
 	{
 		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br>
@@ -144,6 +146,8 @@ session_start();
 		
 		echo("$fetchGetApptTime[1] at $fetchGetApptTime[0]. If you need to cancel this appointment please click here.");
 	}
+	
+	//otherwise the main table to choose an appt is displayed
 	else
 	{
 		
@@ -206,8 +210,8 @@ session_start();
 			  $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
 	
 	
-			  $advisorInfo;
-			  $advisorID;
+			  $advisorInfo = array();
+			  $advisorID = array();
 			  $count = 0;
 			  while($row = mysql_fetch_row($rs)){
 				$advisorInfo[$count] = $row;
@@ -282,11 +286,12 @@ session_start();
 					  $apptAvailable = mysql_fetch_row($rs);
 					  
 					  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND (`major` IS NULL OR  `major` =  '$major')";
-					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
+					  $rs = $COMMON->executeQuery($groupOrNot,$_SERVER["SCRIPT_NAME"]);
 					  $isGroup = mysql_fetch_row($rs);
 					  //echo "$row";
 					  if($apptAvailable[0] >= 1)
 					  {
+						var_dump($isGroup[0]);
 						if($isGroup[0] > 1)
 						{
 							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";

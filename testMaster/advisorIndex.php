@@ -81,9 +81,9 @@ session_start();
       <form class="form-signin" action = "advisorHome.php" method ="post">
         <h2 class="form-signin-heading">Please sign in</h2>
         <label for="inputFname" class="sr-only">First Name</label>
-        <input type="text" name = "fname" class="form-control" placeholder="First Name"  autofocus>
+        <input type="text" name = "advFname" class="form-control" placeholder="First Name"  autofocus>
         <label for="inputLname"  class="sr-only">Last Name</label>
-        <input type="text" name = "lname" class="form-control" placeholder="Last Name"  autofocus>
+        <input type="text" name = "advLname" class="form-control" placeholder="Last Name"  autofocus>
         <label for="inputID"  class="sr-only">ID</label>
         <input type="text" name = "advisorID" class="form-control" placeholder="Advisor ID"  autofocus>
         <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign in</button>

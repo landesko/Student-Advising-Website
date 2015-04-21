@@ -93,7 +93,7 @@ while($cdate < $edate){
 echo("</select>");
 
 
-$sql = "select major from testingmajors";
+$sql = "select major from majors";
 echo("<table><tr><th>Start Time</th><th>Capacity</th><th>Major</th></tr>");
 
 while($num < 14){

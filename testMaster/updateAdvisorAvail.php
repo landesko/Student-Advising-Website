@@ -147,8 +147,8 @@ echo($cdate);
 					
 					$z=$cap[$k];
 					while ($z>0){
-						//$sql = "INSERT INTO `dalearn1`.`appointments` (`apptNum`, `studentID`, `advisorID`) VALUES ('$aptnum', NULL, '$advid');";
-						$sql = "INSERT INTO `dalearn1`.`appointments` (`apptNum`, `advisorID`, `open`) 
+						//$sql = "INSERT INTO `dale2`.`appointments` (`apptNum`, `studentID`, `advisorID`) VALUES ('$aptnum', NULL, '$advid');";
+						$sql = "INSERT INTO `dale2`.`appointments` (`apptNum`, `advisorID`, `open`) 
 						VALUES ('$aptnum', '$advid', 1);";
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 						$z=$z-1;
