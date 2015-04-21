@@ -54,14 +54,7 @@ session_start();
     <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-            <img class="navbar-brand"  src="res/logo.png" >
-                
+            <img class="navbar-brand"  src="res/logo.png" >      
         </div>
         <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -195,9 +188,14 @@ session_start();
 	
 		if ($fetchDay[0] != NULL)
 		{
+			
+		$sqlReturnDate = "SELECT DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		$getDate = $COMMON->executeQuery($sqlReturnDate,$_SERVER["SCRIPT_NAME"]);
+		$fetchDate = mysql_fetch_row($getDate);
 	
 		 //<!--Sign In-->
 	  	echo("<div class='container'>
+		<h4>$fetchDate[0]</h4>
 		<table class='table' border='1'>
 	   
 		<thead>
@@ -291,7 +289,7 @@ session_start();
 					  //echo "$row";
 					  if($apptAvailable[0] >= 1)
 					  {
-						var_dump($isGroup[0]);
+						//var_dump($isGroup[0]);
 						if($isGroup[0] > 1)
 						{
 							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";

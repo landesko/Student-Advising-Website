@@ -5,8 +5,8 @@ body{
 .titleBar
 {
 	text-align: center;
-vertical-align: middle;
-width: 50%;
+	vertical-align: middle;
+	width: 50%;
     margin: 0 auto;
 	position: relative;
 }	

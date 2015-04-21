@@ -52,12 +52,6 @@ session_start();
     <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
             <img class="navbar-brand"  src="res/logo.png" >
                 
         </div>
@@ -105,7 +99,7 @@ session_start();
 	$advisorID = $apptInfo[0];
 	$apptNum = $apptInfo[1];
 	
-	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `apptNum` = $apptNum AND `advisorID` = '$advisorID' LIMIT 1";
+	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `apptNum` = $apptNum AND `advisorID` = '$advisorID' AND `open` = 1 LIMIT 1";
 	$rs1 = $COMMON->executeQuery($sqlAddAppt,$_SERVER["SCRIPT_NAME"]);
 	
 	$sqlAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$advisorID'";

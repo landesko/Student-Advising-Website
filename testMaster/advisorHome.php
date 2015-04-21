@@ -54,14 +54,7 @@ session_start();
     <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-            <img class="navbar-brand"  src="res/logo.png" >
-                
+            <img class="navbar-brand"  src="res/logo.png" >      
         </div>
         <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
@@ -76,7 +69,7 @@ session_start();
         </li>
       </ul>
       <div class="titleBar">
-             <h2>CMEE Student Advising Web Page</h2>
+             <h2>CMEE Advisor Home Page</h2>
       </div>
        
     </div>
@@ -124,28 +117,6 @@ session_start();
 	$advFullName;
 	$advFName;
 	$advLName;
-	echo("<form action='advisorShowSchedule.php' method='post' name='advAvail'>");
-	
-	
-	echo("<br>");
-	
-	echo("<input type='submit' value='Show Schedule'>");
-	echo(" for: ");
-	echo("<select name='advisor'>");
-	echo("<option value=all> all advisors </option>");
-	
-	while($row = mysql_fetch_row($rs))
-	{
-		 $advFullName=$row[1].$space.$row[2];
-		 $advName=$row[1] . " " . $row[2];
-		 echo("<option value='");
-		 echo("$advName'");
-		 echo(">" . $advName . "</option>");
-	}
-	echo("</select>");
-	echo("</form>");
-	
-	echo("<form action='advisorHome.php' method='post' name='Form1'>");
 
 		if ($date == NULL)
 		  {
@@ -156,7 +127,7 @@ session_start();
 			$sqlDate = $date;
 		  }
 		  
-		echo("Welcome, $advFname $advLname, to the Student Advising Web Page.<br><br>");
+		echo("Welcome advisor, $advFname $advLname, to the Advisor Home Page.<br><br>");
 		
 		//make sure day is valid
 		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
@@ -177,22 +148,49 @@ session_start();
 		
 		if ($fetchDay[0] == NULL)
 		{
-			echo("You have not chosen a day when appointments are available. ");	
+			echo("<b>You have not chosen a day when appointments are available.</b><br><br> ");	
 		}
 		
-		echo("Please select an appointment by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
+		echo("To quickly view the current week's schedule for an advisor please select from the options below and click Show Schedule");
+		
+		echo("<div class='dropdown'>");
+	echo("<form action='advisorShowSchedule.php' method='post' target='_blank' name='advAvail'>");
+	echo("<br>");
+	echo("<button class='btn btn-sm btn-primary' type='submit' >Show Schedule</button>");
+	echo(" for: ");
+	echo("<select name='advisor'>");
+	
+	while($row = mysql_fetch_row($rs))
+	{
+		 $advFullName=$row[1].$space.$row[2];
+		 $advName=$row[1] . " " . $row[2];
+		 echo("<option value='");
+		 echo("$advName'");
+		 echo(">" . $advName . "</option>");
+	}
+	echo("</select>");
+	echo("</form>");
+	echo("</div>");
+	
+		echo("<form action='advisorHome.php' method='post' name='Form1'>");
+		
+		echo("<br>Otherwise please select a day to show appointments by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
 	
 	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
 	  
 	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form><br>");
-		echo("Once you have chosen a day please select an available appointment and then click Submit to make the appointment.<br>");
+		echo("Once you have chosen a day please select which advisor you would like to print a schedule for.<br>");
 	  	echo("<br></div>");
 	
 		if ($fetchDay[0] != NULL)
 		{
+		$sqlReturnDate = "SELECT DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		$getDate = $COMMON->executeQuery($sqlReturnDate,$_SERVER["SCRIPT_NAME"]);
+		$fetchDate = mysql_fetch_row($getDate);
 	
 		 //<!--Sign In-->
 	  	echo("<div class='container'>
+		<h4>$fetchDate[0]</h4>
 		<table class='table' border='1'>
 	   
 		<thead>
@@ -274,17 +272,28 @@ session_start();
 					  $rs = $COMMON->executeQuery($getStudentIDs,$_SERVER["SCRIPT_NAME"]);
 					  
 					  $group = 0;
+					  $numNull = 0;
 					  
 					  echo"<td>";
 					  while ($fetchStudentIDs = mysql_fetch_row($rs))
 					  {
-						 // var_dump($fetchStudentIDs);
-						  echo("$fetchStudentIDs[0]");
+						 if ($fetchStudentIDs[0] != NULL)
+						 {
+						  echo("$fetchStudentIDs[0]<br>");
+						 }
 						  $group++;
+						  if($fetchStudentIDs[0] == NULL)
+						  {
+							$numNull++;  
+						  }
 					  }
 					  if ($group > 1)
 					  {
-						echo(" - Group Appt");  
+						echo("Group Appt<br>Slots Open = $numNull");  
+					  }
+					  else if($group == 1)
+					  {
+						echo("Single Appt");  
 					  }
 					  echo"</td>";
 					  
