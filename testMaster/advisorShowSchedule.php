@@ -93,14 +93,21 @@ while($row = mysql_fetch_row($rs)){
 }
 
 if($advisor == "all"){
-	$sql = "SELECT * FROM `advisors`";
-	$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-	while($row = mysql_fetch_row($rs)){
-
-	}
+	$sql = "SELECT * FROM `advisors`";	
 }
 else{
+	//$sql = "SELECT * FROM 'advisors' WHERE concat(fname,' ',lname) = '$advisor'";
+	$sql = "SELECT * FROM `advisors` WHERE `advisorID` = '$advID'";
+}
+
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+echo("<div class='container'>");//
+while($row = mysql_fetch_row($rs)){
+	$advisor=$row[1] . " " . $row[2];
+	$advID=$row[0];
 	$i=0;
+	$curDay = $thisMonday;
+	//echo("<div class='container'>");//
 	while($i < 5){
 		$emptytable=1;
 		echo("<br>".$advisor." on ".$curDay);
@@ -122,32 +129,55 @@ else{
 					$rs3 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 					$row3 = mysql_fetch_row($rs3);
 				
+
+					$stuID=$row3[0];
+					$stuMaj = $row3[3];
 					$stuName=$row3[1] . " " . $row3[2];
 					if ($row2[1]==null){
 						$stuName="No Student";
+						//$stuID="867-5309";
+						$rowColor++;
+						if (isset($row2[3])){
+							$stuMaj="open to ".$row2[3]." students";
+						}
+						else{
+							$stuMaj="open to any tech student";
+						}
 					}
+					if($lasttime == $row1[2]){
+						$thistime = " ";
+					}
+					else{
+						$thistime = $row1[2];
+						$lasttime = $row1[2];
+					}
+					
+					
 					echo("<tr>");
 					echo("<td>");
-					echo($row1[2]);
+					echo($thistime);
 					echo("</td><td>");				
 					echo($stuName);
 					echo("</td><td>");
-					echo($row3[0]);
+					echo($stuID);
 					echo("</td><td>");
-					echo($row3[3]);
+					echo($stuMaj);
 					echo("</tr>");						
 				}
 				
 			}
 			$curDay = date('Y-m-d', strtotime($curDay . ' + 1 day'));
 			$i=$i+1;
+			$lasttime=7;
 			
 			if($emptytable==1){
 				echo("<tr>");
 				echo("<td>");
 				echo("NO");
 				echo("</td><td>");				
-				echo("appt");
+				echo("student");
+				echo("</td><td>");		
+				echo("appointments");
 				echo("</td><td>");
 				echo("today");
 				echo("</tr>");						
