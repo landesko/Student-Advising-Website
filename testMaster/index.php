@@ -57,17 +57,14 @@ session_start();
      <!--Sign In-->
     <div class="container">
 
-      <form class="form-signin" action = "schedule.php" method ="post">
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputFname" class="sr-only">First Name</label>
-        <input type="text" name = "fname" class="form-control" placeholder="First Name"  autofocus>
-        <label for="inputLname"  class="sr-only">Last Name</label>
-        <input type="text" name = "lname" class="form-control" placeholder="Last Name"  autofocus>
-        <label for="inputID"  class="sr-only">ID</label>
-        <input type="text" name = "studentID" class="form-control" placeholder="Student ID"  autofocus>
-        <label for="inputMajor"  class="sr-only">Major</label>
-        <input type="text" name = "major" class="form-control" placeholder="Major"  autofocus>
-        <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign in</button>
+	<div class="titleBar">
+    <h2 class="form-signin-heading">Student / Advisor Sign In</h2>
+    </div>
+      <form class="form-signin" action = "studentIndex.php" method ="post">
+        <button class="btn btn-lg btn-primary btn-block" type="submit" >Student Sign In</button>
+        </form>
+       <form class="form-signin" action = "advisorIndex.php" method ="post">
+        <button class="btn btn-lg btn-success btn-block" type="submit" >Advisor Sign In</button>
       </form>
 
     </div> <!-- /container -->

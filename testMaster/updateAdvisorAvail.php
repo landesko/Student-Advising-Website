@@ -1,7 +1,86 @@
 <?php
+
+session_start();
+?>
+
+<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+
+<head>
+<title>CMEE Advisor Home Page</title>
+<!-- ============================================================== -->
+<meta name="resource-type" content="document" />
+<meta name="distribution" content="global" />
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Language" content="en-us" />
+<meta name="description" content="UMBC Advising" />
+<meta name="keywords" content="UMBC, Advising" />
+<!-- ============================================================== -->
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+
+
+    <!-- -->
+    <link rel="stylesheet" href="https://cdn.rawgit.com/oneyoung/jquery-calendar/master/css/style.css" />
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.rawgit.com/oneyoung/jquery-calendar/master/js/calendar.js"></script>
+    
+    <!-- Custom style for sign in -->
+  <link href="css/signin.css" rel="stylesheet">
+
+   <!-- Main Style -->
+  <link href="css/main.css" rel="stylesheet">
+
+   <!-- Timetable Style -->
+  <link href="css/timetable.css" rel="stylesheet">
+    
+    <link rel="icon" type="image/png" href="icon.png" />
+    
+   
+</head>
+
+
+<body>
+
+<!--Navigation Bar-->
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+            <img class="navbar-brand"  src="res/logo.png" >      
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
+          <ul class="dropdown-menu" role="menu">
+            <li><a href="advisorSetAvail.php">Set Availability</a></li>
+            <li class="divider"></li>
+            <li><a href="advisorHome.php">Home</a></li>
+            <li class="divider"></li>
+            <li><a href="advisorIndex.php">Log Out</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="titleBar">
+             <h2>CMEE Advisor Home Page</h2>
+      </div>
+       
+    </div>
+  </nav>
+
+<div class="container">
+<div class="tableBar">
+<?php
 echo("<html><head></head><body>");
 
-$debug = true;
+$debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 //var_dump($_POST);
@@ -88,7 +167,7 @@ $cap = array(
 	14 => ($_POST['cap14']),
 	15 => ($_POST['cap15']),
 );
-$major = array(
+$majorArray = array(
 	0 => ($_POST['major0']),
 	1 => ($_POST['major1']),
 	2 => ($_POST['major2']),
@@ -169,13 +248,13 @@ while($cdate < $edate){
 					while ($z>0){
 						//$sql = "INSERT INTO `dale2`.`appointments` (`apptNum`, `studentID`, `advisorID`) VALUES ('$aptnum', NULL, '$advid');";
 						$theTIME = $timearray[$k][1];
-						if($major[$k]=='any'){
+						if($majorArray[$k]=='any'){
 						$sql = "INSERT INTO `dale2`.`appointments` (`date`, `time`, `advisorID`, `open`) 
 						VALUES ('$cdate', '$theTIME', '$advid', 1);";
 						}
 						else{
 						$sql = "INSERT INTO `dale2`.`appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$cdate', '$theTIME', '$advid', '$major[$k]', 1);";
+						VALUES ('$cdate', '$theTIME', '$advid', '$majorArray[$k]', 1);";
 						}
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 						$z=$z-1;
@@ -195,15 +274,33 @@ while($cdate < $edate){
 
 
 
-echo("<p>Apointment updated</p>");
+echo("<p>Advisor Availability Updated</p>");
 echo("<form action='advisorSetAvail.php' method='post' name='advAvail'>");
-echo("<input type='submit' value='Set Availability'>");
+echo("<button class='btn btn-sm btn-primary' type='submit' >Set More Availabilities</button>");
 echo("</form>");
 
 
-echo("<form action='advisorShowSchedule.php' method='post' name='advAvail'>");
-echo("<input type='submit' value='Show Schedule'>");
+echo("<form action='advisorHome.php' method='post' name='advAvail'>");
+echo("<button class='btn btn-sm btn-primary' type='submit' >Back To Advisor Home</button>");
 echo("</form>");
-
-echo("</body></html>");
 ?>
+
+</div>
+</div>
+
+<!-- Load javascript required for Bootstrap animation-->
+<script src="https://code.jquery.com/jquery.js"></script>
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+<script>
+$(document).ready(function(){
+		$(".advisorSlotOpen").click(function(){
+			console.log("clicked");
+		});
+});
+</script>
+
+</body>
+</html>

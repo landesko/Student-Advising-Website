@@ -12,7 +12,7 @@ session_start();
 
 
 <head>
-<title>CMEE Advisor Sign In</title>
+<title>CMEE Advising Sign Up</title>
 <!-- ============================================================== -->
 <meta name="resource-type" content="document" />
 <meta name="distribution" content="global" />
@@ -48,39 +48,30 @@ session_start();
             <img class="navbar-brand"  src="res/logo.png" >      
         </div>
         <div class="titleBar">
-             <h2>CMEE Advisor Sign In</h2>
+             <h2>CMEE Student Advising Web Page</h2>
              </div>
        
        </div>
-
-
-
-    <!-- Collect the nav links, forms, and other content for toggling -->
-   <!-- <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-      <ul class="nav navbar-nav">
-        <li><a href="#">Advisor Console</a></li>
-      </ul>
-     
-      <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Login</a></li>
-      </ul>
-    </div><!-- /.navbar-collapse -->
-    <!--</div><!-- /.container-fluid -->
   </nav>
 
      <!--Sign In-->
     <div class="container">
 
-      <form class="form-signin" action = "advisorHome.php" method ="post">
+      <form class="form-signin" action = "schedule.php" method ="post">
         <h2 class="form-signin-heading">Please Sign In</h2>
         <label for="inputFname" class="sr-only">First Name</label>
-        <input type="text" name = "advFname" class="form-control" placeholder="First Name"  autofocus>
+        <input type="text" name = "fname" class="form-control" placeholder="First Name"  autofocus>
         <label for="inputLname"  class="sr-only">Last Name</label>
-        <input type="text" name = "advLname" class="form-control" placeholder="Last Name"  autofocus>
+        <input type="text" name = "lname" class="form-control" placeholder="Last Name"  autofocus>
         <label for="inputID"  class="sr-only">ID</label>
-        <input type="text" name = "advisorID" class="form-control" placeholder="Advisor ID"  autofocus>
+        <input type="text" name = "studentID" class="form-control" placeholder="Student ID"  autofocus>
+        <label for="inputMajor"  class="sr-only">Major</label>
+        <input type="text" name = "major" class="form-control" maxlength="4" placeholder="Major"  autofocus>
         <button class="btn btn-lg btn-primary btn-block" type="submit" >Sign in</button>
+        <p>*Students, Sign In to create an appointment or to view an existing appointment*</p>
       </form>
+      
+      
 
     </div> <!-- /container -->
 

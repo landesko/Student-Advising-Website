@@ -288,13 +288,38 @@ session_start();
 							$numNull++;  
 						  }
 					  }
+					  
+					  $getMajor = "SELECT `major` FROM `appointments` WHERE `time` = '$time' AND `date` = '$sqlDate' and `advisorID` = '$advisorID[$i]' LIMIT 1";
+					  $majorRs = $COMMON->executeQuery($getMajor,$_SERVER["SCRIPT_NAME"]);
+					  	$fetchMajor = mysql_fetch_row($majorRs);
+					  
 					  if ($group > 1)
 					  {
-						echo("Group Appt<br>Slots Open = $numNull");  
+						echo("Group Appt<br>Slots Open = $numNull of $group<br>");
+						
+						if($fetchMajor[0] == NULL)
+						{
+						echo("Major = ANY");
+						}
+						else
+						{
+						echo("Major = $fetchMajor[0]");	
+						}
+						  
 					  }
 					  else if($group == 1)
 					  {
-						echo("Single Appt");  
+						echo("Single Appt<br>"); 
+						
+						if($fetchMajor[0] == NULL)
+						{
+						echo("Major = ANY");
+						}
+						else
+						{
+						echo("Major = $fetchMajor[0]");	
+						}
+						 
 					  }
 					  echo"</td>";
 					  

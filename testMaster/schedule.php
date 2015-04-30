@@ -281,20 +281,24 @@ session_start();
 					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
 					  $apptAvailable = mysql_fetch_row($rs);
 					  
+					  $outOf = "SELECT COUNT(`open`) FROM `appointments` WHERE `time` = '$time' AND `date` = '$sqlDate' AND `advisorID` = '$advisorID[$i]' AND (`major` IS NULL OR  `major` =  '$major')";
+					  $rsOutOf = $COMMON->executeQuery($outOf,$_SERVER["SCRIPT_NAME"]);
+					  $total = mysql_fetch_row($rsOutOf);
+					  
 					  $groupOrNot = "SELECT COUNT(`time`) FROM `appointments` WHERE `time` = '$time' AND `date` = '$sqlDate' AND `advisorID` = '$advisorID[$i]' AND (`major` IS NULL OR  `major` =  '$major')";
-					  $rs = $COMMON->executeQuery($groupOrNot,$_SERVER["SCRIPT_NAME"]);
-					  $isGroup = mysql_fetch_row($rs);
+					  $rsGroup = $COMMON->executeQuery($groupOrNot,$_SERVER["SCRIPT_NAME"]);
+					  $isGroup = mysql_fetch_row($rsGroup);
 					  //echo "$row";
 					  if($apptAvailable[0] >= 1)
 					  {
 						//var_dump($isGroup[0]);
 						if($isGroup[0] > 1)
 						{
-							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Group Appt <br>Slots Open = $apptAvailable[0] of $total[0]</label></td>";
 						}
 						else
 						{
-							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Single - Open</label></td>";
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Single</label></td>";
 						}
 					  }
 					  else
@@ -310,7 +314,7 @@ session_start();
 	
 	
 			
-		echo("</tbody></table><button class='btn btn-lg btn-primary' type='submit' >Submit</button></form> <br><br>");
+		echo("</tbody></table><button class='btn btn-lg btn-primary' type='submit' >Sign Up For Appt.</button></form> <br><br>");
 		}
 	}
 	  ?>
