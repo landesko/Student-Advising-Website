@@ -17,22 +17,30 @@ $num=0;
 $sdate=Date('2015-03-02');
 $cdate=Date("2015-03-02");
 $edate=Date("2015-05-01");
-$array = array(
-	0 => "9:00",
-	1 => "9:30",
-	2 => "10:00",
-	3 => "10:30",
-	4 => "11:00",
-	5 => "11:30",
-	6 => "12:00",
-	7 => "12:30",
-	8 => "13:00",
-	9 => "13:30",
-	10 => "14:00",
-	11 => "14:30",
-	12 => "15:00",
-	13 => "15:30",	
-);
+
+$Tsql = "SELECT time_format(`time`,'%h:%i %p'), `time` FROM `times` WHERE 1;";
+$Trs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
+
+$array = array();
+
+$count = 0;
+
+while ($trow = mysql_fetch_row($Trs)){
+	$array[$count]=$trow;
+	$count++;
+}
+
+echo("<br><br>TESTING ARRAY<br><br>");
+$tempcount=$count;
+while($tempcount > 0){
+	echo($array[$tempcount][0]);
+	echo("<br>");
+	echo($array[$tempcount][0]);
+	$tempcount--;
+	echo("<br>next<br>");
+}
+
+
 
 
 echo("<form action='updateAdvisorAvail.php' method='post' name='form1'>");
@@ -96,11 +104,11 @@ echo("</select>");
 $sql = "select major from majors";
 echo("<table><tr><th>Start Time</th><th>Capacity</th><th>Major</th></tr>");
 
-while($num < 14){
-	echo("<tr><td>$array[$num]</td><td>");
+while($num < $count){
+	echo("<tr><td>"); echo($array[$num][0]); echo("</td><td>");
 	echo("<select name='cap$num'>");
 	$i=0;
-	while($i<11){
+	while($i<12){
 		echo("<option value='");
 		echo("$i'");
 		echo(">" . $i . "</option>");

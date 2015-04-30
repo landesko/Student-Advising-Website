@@ -1,7 +1,7 @@
 <?php
 echo("<html><head></head><body>");
 
-$debug = false;
+$debug = true;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 //var_dump($_POST);
@@ -67,7 +67,9 @@ $sdate = date(($_POST['startdate']));
 $cdate = $sdate;
 $edate = date(($_POST['enddate']));
 
-echo("<br>");
+//echo("<br>");
+
+
 $cap = array(
 	0 => ($_POST['cap0']),
 	1 => ($_POST['cap1']),
@@ -83,6 +85,8 @@ $cap = array(
 	11 => ($_POST['cap11']),
 	12 => ($_POST['cap12']),
 	13 => ($_POST['cap13']),
+	14 => ($_POST['cap14']),
+	15 => ($_POST['cap15']),
 );
 $major = array(
 	0 => ($_POST['major0']),
@@ -99,57 +103,80 @@ $major = array(
 	11 => ($_POST['major11']),
 	12 => ($_POST['major12']),
 	13 => ($_POST['major13']),
-);
-$timearry = array(
-	0 => '09:00:00',
-	1 => '09:30:00',
-	2 => "10:00:00",
-	3 => "10:30:00",
-	4 => "11:00:00",
-	5 => "11:30:00",
-	6 => "12:00:00",
-	7 => "12:30:00",
-	8 => "13:00:00",
-	9 => "13:30:00",
-	10 => "14:00:00",
-	11 => "14:30:00",
-	12 => "15:00:00",
-	13 => "15:30:00",	
+	14 => ($_POST['major14']),
+	15 => ($_POST['major15']),
 );
 
+$Tsql = "SELECT time_format(`time`,'%h:%i %p'), `time` FROM `times` WHERE 1;";
+$Trs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
+
+$timearray = array();
+
+$count = 0;
+
+while ($trow = mysql_fetch_row($Trs)){
+	$timearray[$count]=$trow;
+	$count++;
+}
+
+
+//$timearry = array(
+//	0 => '09:00:00',
+//	1 => '09:30:00',
+//	2 => "10:00:00",
+//	3 => "10:30:00",
+//	4 => "11:00:00",
+//	5 => "11:30:00",
+//	6 => "12:00:00",
+//	7 => "12:30:00",
+//	8 => "13:00:00",
+//	9 => "13:30:00",
+//	10 => "14:00:00",
+//	11 => "14:30:00",
+//	12 => "15:00:00",
+//	13 => "15:30:00",	
+//);
+
 while($cdate < $edate){
-echo("<br>cdate: ");
-echo($cdate);
+//echo("<br>cdate: ");
+//echo($cdate);
 		$j=1;	
 		while ($j<6){//check each weekdat
-			echo("   <br> weekdays: ");
-			echo($weekdays[$j]);
-			echo(" =? ");
-			echo((date("w", strtotime($cdate))));
+			//echo("   <br> weekdays: ");
+			//echo($weekdays[$j]);
+			//echo(" =? ");
+			//echo((date("w", strtotime($cdate))));
 			if ($weekdays[$j]==(date("w", strtotime($cdate)))){
-				echo("      yup");
+				//echo("      yup");
 				$k=0;
-				while($k<14){
-					echo("      date: ");
-					echo($cdate);
-					echo(" k: ");
-					echo($k);
-					echo(" time: ");
-					echo($timearry[$k]);
-					echo(" faketime: ");
-					echo($timearry[0]);
-					echo("<br>");
+				while($k<16){
+					//echo("      date: ");
+					//echo($cdate);
+					//echo(" k: ");
+					//echo($k);
+					//echo(" time: ");
+					//echo($timearry[$k][0]);
+					//echo(" faketime: ");
+					//echo($timearry[$k][1]);
+					//echo("<br>");
 					//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$cdate' AND `time` = `$timearry[$k]`";
-					$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$cdate' AND `time` = '$timearry[$k]'";
-					$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-					$row = mysql_fetch_row($rs);
-					$aptnum = $row[0];
+					//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$cdate' AND `time` = '$timearry[$k]'";
+					//$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+					//$row = mysql_fetch_row($rs);
+					//$aptnum = $row[0];
 					
 					$z=$cap[$k];
 					while ($z>0){
 						//$sql = "INSERT INTO `dale2`.`appointments` (`apptNum`, `studentID`, `advisorID`) VALUES ('$aptnum', NULL, '$advid');";
-						$sql = "INSERT INTO `dale2`.`appointments` (`apptNum`, `advisorID`, `open`) 
-						VALUES ('$aptnum', '$advid', 1);";
+						$theTIME = $timearray[$k][1];
+						if($major[$k]=='any'){
+						$sql = "INSERT INTO `dale2`.`appointments` (`date`, `time`, `advisorID`, `open`) 
+						VALUES ('$cdate', '$theTIME', '$advid', 1);";
+						}
+						else{
+						$sql = "INSERT INTO `dale2`.`appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
+						VALUES ('$cdate', '$theTIME', '$advid', '$major[$k]', 1);";
+						}
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 						$z=$z-1;
 					}
