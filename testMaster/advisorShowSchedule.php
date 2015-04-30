@@ -113,13 +113,13 @@ while($row = mysql_fetch_row($rs)){
 		echo("<br>".$advisor." on ".$curDay);
 		echo("<table width='100%'>");
 		echo("<th>Time</th><th>Name</th><th>Student ID</th><th>Major</th>");
-			$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$curDay'";
-			$rs1 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-			while($row1 = mysql_fetch_row($rs1))
-			{			
-				$apptID=$row1[0];
+			//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$curDay'";
+			//$rs1 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+			//while($row1 = mysql_fetch_row($rs1))
+			//{			
+				//$apptID=$row1[0];
 				
-				$sql = "SELECT * FROM `appointments` WHERE `apptNum` = '$apptID' AND `advisorID` = '$advID'";
+				$sql = "SELECT * FROM `appointments` WHERE `date` = '$curDay' AND `advisorID` = '$advID'";
 				$rs2 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);										
 				while($row2 = mysql_fetch_row($rs2)){
 					//empty table check
@@ -133,23 +133,23 @@ while($row = mysql_fetch_row($rs)){
 					$stuID=$row3[0];
 					$stuMaj = $row3[3];
 					$stuName=$row3[1] . " " . $row3[2];
-					if ($row2[1]==null){
+					if ($row2[3]==null){
 						$stuName="No Student";
-						//$stuID="867-5309";
+						$stuID="867-5309";
 						$rowColor++;
-						if (isset($row2[3])){
-							$stuMaj="open to ".$row2[3]." students";
+						if (isset($row2[5])){
+							$stuMaj="open to ".$row2[5]." students";
 						}
 						else{
 							$stuMaj="open to any tech student";
 						}
 					}
-					if($lasttime == $row1[2]){
+					if($lasttime == $row2[2]){
 						$thistime = " ";
 					}
 					else{
-						$thistime = $row1[2];
-						$lasttime = $row1[2];
+						$thistime = $row2[2];
+						$lasttime = $row2[2];
 					}
 					
 					
@@ -165,7 +165,7 @@ while($row = mysql_fetch_row($rs)){
 					echo("</tr>");						
 				}
 				
-			}
+			//}
 			$curDay = date('Y-m-d', strtotime($curDay . ' + 1 day'));
 			$i=$i+1;
 			$lasttime=7;
@@ -173,13 +173,13 @@ while($row = mysql_fetch_row($rs)){
 			if($emptytable==1){
 				echo("<tr>");
 				echo("<td>");
-				echo("NO");
-				echo("</td><td>");				
-				echo("student");
-				echo("</td><td>");		
-				echo("appointments");
+				echo("No");
 				echo("</td><td>");
-				echo("today");
+				echo("Student");
+				echo("</td><td>");			
+				echo("Appointment");
+				echo("</td><td>");
+				echo("Today");
 				echo("</tr>");						
 			}
 			
