@@ -111,12 +111,12 @@ session_start();
     $sqlDate;
 	
 	
-	$sql = "SELECT * FROM `advisors` ";
+	/*$sql = "SELECT * FROM `advisors` ";
 	$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 	$advName;
 	$advFullName;
 	$advFName;
-	$advLName;
+	$advLName;*/
 
 		if ($date == NULL)
 		  {
@@ -129,12 +129,12 @@ session_start();
 		  
 		echo("Welcome advisor, $advFname $advLname, to the Advisor Home Page.<br><br>");
 		
-		//make sure day is valid
-		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		//displays range that you must choose dates from
+		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `dates` WHERE `date` = '$sqlDate' LIMIT 1";
 		$getIsWeekDay = $COMMON->executeQuery($sqlIsWeekDay,$_SERVER["SCRIPT_NAME"]);
 		$fetchDay = mysql_fetch_row($getIsWeekDay);
 		
-		$sqlRange = "SELECT MAX(  DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) ) FROM  `apptTimes` WHERE 1 GROUP BY  `date`";
+		$sqlRange = "SELECT MAX(  DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) ) FROM  `dates` WHERE 1 GROUP BY  `date`";
 		$rsGetRange = $COMMON->executeQuery($sqlRange,$_SERVER["SCRIPT_NAME"]);
 		$fetchRange = mysql_fetch_row($rsGetRange);
 		
@@ -148,7 +148,7 @@ session_start();
 		
 		if ($fetchDay[0] == NULL)
 		{
-			echo("<b>You have not chosen a day when appointments are available.</b><br><br> ");	
+			echo("You have not chosen a day when appointments are available. ");	
 		}
 		
 		echo("To quickly view the current week's schedule for an advisor please select from the options below and click Show Schedule");
@@ -159,6 +159,7 @@ session_start();
 	echo("<button class='btn btn-sm btn-primary' type='submit' >Show Schedule</button>");
 	echo(" for: ");
 	echo("<select name='advisor'>");
+	echo("<option value=all>All Advisors</option>");
 	
 	while($row = mysql_fetch_row($rs))
 	{
@@ -184,7 +185,7 @@ session_start();
 	
 		if ($fetchDay[0] != NULL)
 		{
-		$sqlReturnDate = "SELECT DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		$sqlReturnDate = "SELECT DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) FROM `dates` WHERE `date` = '$sqlDate' LIMIT 1";
 		$getDate = $COMMON->executeQuery($sqlReturnDate,$_SERVER["SCRIPT_NAME"]);
 		$fetchDate = mysql_fetch_row($getDate);
 	
@@ -233,7 +234,7 @@ session_start();
 				// date('w',srttotime());
 	
 			  // time info
-			  $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
+			  $apptTimeSql = "SELECT TIME_FORMAT(`time`, '%h:%i %p'), `time` FROM `times` WHERE 1";
 			  $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
 			  $apptTimeInfo;
 			  $count = 0;
@@ -261,14 +262,14 @@ session_start();
 				  {
 				  echo "<tr class='success'>";
 				  }
-				  echo "<td>$timeInfo[2]</td>";
+				   echo "<td>$timeInfo[0]</td>";
 	
 					// get appt info
-				  $apptNum = $timeInfo[0];
+				  $time = $timeInfo[1];
 				  
 				  for($i = 0; $i<count($advisorID); $i++)
 				  {
-					  $getStudentIDs = "SELECT `studentID` FROM `appointments` WHERE `apptNum` = '$apptNum' and `advisorID` = '$advisorID[$i]'";
+					  $getStudentIDs = "SELECT `studentID` FROM `appointments` WHERE `time` = '$time' AND `date` = '$sqlDate' and `advisorID` = '$advisorID[$i]'";
 					  $rs = $COMMON->executeQuery($getStudentIDs,$_SERVER["SCRIPT_NAME"]);
 					  
 					  $group = 0;

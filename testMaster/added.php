@@ -61,7 +61,7 @@ session_start();
           <ul class="dropdown-menu" role="menu">
             <li><a href="advisorInfo.php">Advising Info</a></li>
             <li class="divider"></li>
-            <li><a href="index.php">Log Out</a></li>
+            <li><a href="studentIndex.php">Log Out</a></li>
           </ul>
         </li>
       </ul>
@@ -97,9 +97,10 @@ session_start();
 	$apptInfo = explode(" ", $apptStuff);
 	
 	$advisorID = $apptInfo[0];
-	$apptNum = $apptInfo[1];
+	$time = $apptInfo[1];
+	$advDate = $apptInfo[2];
 	
-	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `apptNum` = $apptNum AND `advisorID` = '$advisorID' AND `open` = 1 LIMIT 1";
+	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `time` = '$time' AND `date` = '$advDate' AND `advisorID` = '$advisorID' AND `open` = 1 LIMIT 1";
 	$rs1 = $COMMON->executeQuery($sqlAddAppt,$_SERVER["SCRIPT_NAME"]);
 	
 	$sqlAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$advisorID'";

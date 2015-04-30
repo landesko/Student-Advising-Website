@@ -62,7 +62,7 @@ session_start();
           <ul class="dropdown-menu" role="menu">
             <li><a href="advisorInfo.php">Advising Info</a></li>
             <li class="divider"></li>
-            <li><a href="index.php">Log Out</a></li>
+            <li><a href="studentIndex.php">Log Out</a></li>
           </ul>
         </li>
       </ul>
@@ -122,22 +122,19 @@ session_start();
 		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br>
 			You have already made an appointment with ");
 			
-			$getAppt = "SELECT `apptNum`, `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
+			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
 			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAppt = mysql_fetch_row($rsGetAppt);
 			
-			$getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[1]'";
+			$getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[2]'";
 			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
 			
 		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
-			$getApptTime = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ) FROM `apptTimes` WHERE `apptNum` = $fetchGetAppt[0]";
-			//var_dump($getApptTime);
-			$rsGetApptTime = $COMMON->executeQuery($getApptTime,$_SERVER["SCRIPT_NAME"]);
-			$fetchGetApptTime = mysql_fetch_row($rsGetApptTime);
 		
-		echo("$fetchGetApptTime[1] at $fetchGetApptTime[0]. If you need to cancel this appointment please click here.");
+		//Link to delete appt - TOBEADDED
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0]. If you need to cancel this appointment please click here.");
 	}
 	
 	//otherwise the main table to choose an appt is displayed
@@ -157,11 +154,12 @@ session_start();
 		  
 		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br><br>");
 		
-		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		//displays range that you must choose dates from
+		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `dates` WHERE `date` = '$sqlDate' LIMIT 1";
 		$getIsWeekDay = $COMMON->executeQuery($sqlIsWeekDay,$_SERVER["SCRIPT_NAME"]);
 		$fetchDay = mysql_fetch_row($getIsWeekDay);
 		
-		$sqlRange = "SELECT MAX(  DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) ) FROM  `apptTimes` WHERE 1 GROUP BY  `date`";
+		$sqlRange = "SELECT MAX(  DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) ) FROM  `dates` WHERE 1 GROUP BY  `date`";
 		$rsGetRange = $COMMON->executeQuery($sqlRange,$_SERVER["SCRIPT_NAME"]);
 		$fetchRange = mysql_fetch_row($rsGetRange);
 		
@@ -189,7 +187,7 @@ session_start();
 		if ($fetchDay[0] != NULL)
 		{
 			
-		$sqlReturnDate = "SELECT DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) FROM `apptTimes` WHERE `date` = '$sqlDate' LIMIT 1";
+		$sqlReturnDate = "SELECT DATE_FORMAT(  `date` ,  '%b. %d, %Y' ) FROM `dates` WHERE `date` = '$sqlDate' LIMIT 1";
 		$getDate = $COMMON->executeQuery($sqlReturnDate,$_SERVER["SCRIPT_NAME"]);
 		$fetchDate = mysql_fetch_row($getDate);
 	
@@ -239,7 +237,7 @@ session_start();
 				// date('w',srttotime());
 	
 			  // time info
-			  $apptTimeSql = "SELECT `apptNum`,`date`,TIME_FORMAT(`time`, '%h:%i %p') FROM `apptTimes` WHERE `date` = '$sqlDate'";
+			  $apptTimeSql = "SELECT TIME_FORMAT(`time`, '%h:%i %p'), `time` FROM `times` WHERE 1";
 			  $rs = $COMMON->executeQuery($apptTimeSql,$_SERVER["SCRIPT_NAME"]);
 			  $apptTimeInfo;
 			  $count = 0;
@@ -272,18 +270,18 @@ session_start();
 				  {
 				  echo "<tr class='success'>";
 				  }
-				  echo "<td>$timeInfo[2]</td>";
+				  echo "<td>$timeInfo[0]</td>";
 	
 					// get appt info
-				  $apptNum = $timeInfo[0];
+				  $time = $timeInfo[1];
 				  
 				  for($i = 0; $i<count($advisorID); $i++)
 				  {
-					  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND `open` = 1 AND (`major` IS NULL OR  `major` =  '$major')";
+					  $apptSlot = "SELECT COUNT(`open`) FROM `appointments` WHERE `time` = '$time' AND `date` = '$sqlDate' AND `advisorID` = '$advisorID[$i]' AND `open` = 1 AND (`major` IS NULL OR  `major` =  '$major')";
 					  $rs = $COMMON->executeQuery($apptSlot,$_SERVER["SCRIPT_NAME"]);
 					  $apptAvailable = mysql_fetch_row($rs);
 					  
-					  $groupOrNot = "SELECT COUNT(`apptNum`) FROM `appointments` WHERE `apptNum` = '$apptNum' AND `advisorID` = '$advisorID[$i]' AND (`major` IS NULL OR  `major` =  '$major')";
+					  $groupOrNot = "SELECT COUNT(`time`) FROM `appointments` WHERE `time` = '$time' AND `date` = '$sqlDate' AND `advisorID` = '$advisorID[$i]' AND (`major` IS NULL OR  `major` =  '$major')";
 					  $rs = $COMMON->executeQuery($groupOrNot,$_SERVER["SCRIPT_NAME"]);
 					  $isGroup = mysql_fetch_row($rs);
 					  //echo "$row";
@@ -292,11 +290,11 @@ session_start();
 						//var_dump($isGroup[0]);
 						if($isGroup[0] > 1)
 						{
-							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Group - $apptAvailable[0]</label></td>";
 						}
 						else
 						{
-							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $apptNum' checked><label for='$advisorID[$i]'>Single - Open</label></td>";
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Single - Open</label></td>";
 						}
 					  }
 					  else
