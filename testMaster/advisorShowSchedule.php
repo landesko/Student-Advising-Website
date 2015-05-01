@@ -119,7 +119,7 @@ while($row = mysql_fetch_row($rs)){
 			//{			
 				//$apptID=$row1[0];
 				
-				$sql = "SELECT * FROM `appointments` WHERE `date` = '$curDay' AND `advisorID` = '$advID'";
+				$sql = "SELECT * FROM `appointments` WHERE `date` = '$curDay' AND `advisorID` = '$advID' ORDER BY `time` ASC";
 				$rs2 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);										
 				while($row2 = mysql_fetch_row($rs2)){
 					//empty table check
