@@ -71,10 +71,99 @@ $scheduleInfo = explode(" ", ($_POST['advName']));
 $advName = $scheduleInfo[0]. " " .$scheduleInfo[1] ;
 $theDate = $scheduleInfo[2];
 
+echo("<br><br>");
 echo("$advName<br>");
-echo("$theDate");
+echo("$theDate");//2015-3-11
+$curDay=$theDate;
 
 
+$sql = "SELECT * FROM `advisors` WHERE `fname` = '$scheduleInfo[0]' AND `lname` = '$scheduleInfo[1]'";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+echo("<div class='container'>");//
+while($row = mysql_fetch_row($rs)){
+	$advisor=$row[1] . " " . $row[2];
+	$advID=$row[0];
+	$i=0;
+	$curDay = $theDate;
+	//echo("<div class='container'>");//
+	while($i < 1){
+		$emptytable=1;
+		echo("<br>".$advisor." on ".$curDay);
+		echo("<table width='100%'>");
+		echo("<th>Time</th><th>Name</th><th>Student ID</th><th>Major</th>");
+			//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$curDay'";
+			//$rs1 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+			//while($row1 = mysql_fetch_row($rs1))
+			//{			
+				//$apptID=$row1[0];
+				
+				$sql = "SELECT * FROM `appointments` WHERE `date` = '$curDay' AND `advisorID` = '$advID' ORDER BY `time` ASC";
+				$rs2 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);										
+				while($row2 = mysql_fetch_row($rs2)){
+					//empty table check
+					$emptytable=0;
+					
+					$sql = "SELECT * FROM `students` WHERE `studentID` = '$row2[1]' ";
+					$rs3 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+					$row3 = mysql_fetch_row($rs3);
+				
+
+					$stuID=$row3[0];
+					$stuMaj = $row3[3];
+					$stuName=$row3[1] . " " . $row3[2];
+					if ($row2[3]==null){
+						$stuName="No Student";
+						$stuID="867-5309";
+						$rowColor++;
+						if (isset($row2[5])){
+							$stuMaj="open to ".$row2[5]." students";
+						}
+						else{
+							$stuMaj="open to any tech student";
+						}
+					}
+					if($lasttime == $row2[2]){
+						$thistime = " ";
+					}
+					else{
+						$thistime = $row2[2];
+						$lasttime = $row2[2];
+					}
+					
+					
+					echo("<tr>");
+					echo("<td>");
+					echo($thistime);
+					echo("</td><td>");				
+					echo($stuName);
+					echo("</td><td>");
+					echo($stuID);
+					echo("</td><td>");
+					echo($stuMaj);
+					echo("</tr>");						
+				}
+				
+			//}
+			$curDay = date('Y-m-d', strtotime($curDay . ' + 1 day'));
+			$i=$i+1;
+			$lasttime=7;
+			
+			if($emptytable==1){
+				echo("<tr>");
+				echo("<td>");
+				echo("No");
+				echo("</td><td>");
+				echo("Student");
+				echo("</td><td>");			
+				echo("Appointment");
+				echo("</td><td>");
+				echo("Today");
+				echo("</tr>");						
+			}
+			
+			echo("</table>");
+	}
+}
 	
 ?>
 </div>
