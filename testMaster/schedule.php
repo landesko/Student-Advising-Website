@@ -291,14 +291,13 @@ session_start();
 					  //echo "$row";
 					  if($apptAvailable[0] >= 1)
 					  {
-						//var_dump($isGroup[0]);
 						if($isGroup[0] > 1)
 						{
-							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Group Appt <br>Slots Open = $apptAvailable[0] of $total[0]</label></td>";
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]$time' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]$time'>Group Appt <br>Slots Open = $apptAvailable[0] of $total[0]</label></td>";
 						}
 						else
 						{
-							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]'>Single</label></td>";
+							echo "<td class='advisorSlotOpen'><input id='$advisorID[$i]$time' type='radio' name='time' value='$advisorID[$i] $time $sqlDate' checked><label for='$advisorID[$i]$time'>Single</label></td>";
 						}
 					  }
 					  else
