@@ -146,38 +146,53 @@ echo("<input type='checkbox' name='fri' value='5' />Friday ");
 
 echo("<br>");
 echo(" Between: ");
+$Dsql = "SELECT * FROM `dates` WHERE 1;";
+$Drs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
 echo("<select name='startdate'>");
-while($cdate < $edate){
-	
-	$i=0;
-	while($i<7){
+while($row = mysql_fetch_row($Drs)){
 		echo("<option value='");
-		echo("$cdate'");
+		echo($row[0]);
 		echo(">" . $cdate . "</option>");
-		$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-		$i=$i+1;
-	}
-	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
 }
+
+//while($cdate < $edate){
+//	
+//	$i=0;
+//	while($i<7){
+//		echo("<option value='");
+//		echo("$cdate'");
+//		echo(">" . $cdate . "</option>");
+//		$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+//		$i=$i+1;
+//	}
+//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+//}
 echo("</select>");
 
 $cdate=$sdate;
 echo(" And: ");
+$Dsql = "SELECT * FROM `dates` WHERE 1;";
+$Drs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
 echo("<select name='enddate'>");
-while($cdate < $edate){
-	
-	$i=0;
-	while($i<7){
+while($row = mysql_fetch_row($Drs)){
 		echo("<option value='");
-		echo("$cdate'");
+		echo($row[0]);
 		echo(">" . $cdate . "</option>");
-		$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-		$i=$i+1;
-	}
-	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
 }
+//while($cdate < $edate){
+//	
+//	$i=0;
+//	while($i<7){
+//		echo("<option value='");
+//		echo("$cdate'");
+//		echo(">" . $cdate . "</option>");
+//		$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+//		$i=$i+1;
+//	}
+//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+//}
 echo("</select>");
 
 
