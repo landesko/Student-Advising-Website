@@ -12,7 +12,7 @@ session_start();
 
 
 <head>
-<title>CMEE Advisor Sign In</title>
+<title>COEIT Advisor Sign In</title>
 <!-- ============================================================== -->
 <meta name="resource-type" content="document" />
 <meta name="distribution" content="global" />
@@ -48,7 +48,7 @@ session_start();
             <img class="navbar-brand"  src="res/logo.png" >      
         </div>
         <div class="titleBar">
-             <h2>CMEE Advisor Sign In</h2>
+             <h2>COEIT Advisor Sign In</h2>
              </div>
        
        </div>

@@ -10,7 +10,7 @@ session_start();
 
 
 <head>
-<title>CMEE Advisor Home Page</title>
+<title>COEIT Advisor Home Page</title>
 <!-- ============================================================== -->
 <meta name="resource-type" content="document" />
 <meta name="distribution" content="global" />
