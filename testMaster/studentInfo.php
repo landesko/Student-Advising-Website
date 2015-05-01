@@ -3,6 +3,8 @@
 session_start();
 ?>
 
+
+
 <html>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -75,15 +77,33 @@ session_start();
   
   <?php
   
-  	include('CommonMethods.php');
-    $debug = false;
+  include('CommonMethods.php');
+  $debug = false;
+  $COMMON = new Common($debug);
 
-    $COMMON = new Common($debug);
-  
-  	$studentID = $_POST['studentID'];
+  $studentID = ($_POST['studentID']);
+  // TODO:temp
+  //$studentID = "VT25650";
 
+  // query student info
+  $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentID'";
+  $rs = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
   
-  ?>
+  // index
+  //  0 == fname
+  //  1 == lname
+  //  2 == major
+  $studentInfoArray = mysql_fetch_row($rs);
+  $studentFname = $studentInfoArray[0]; 
+  $studentLname = $studentInfoArray[1];
+  $studentMajor = $studentInfoArray[2];
+
+  var_dump($studentFname);
+  var_dump($studentLname);
+  var_dump($studentMajor);
+  
+?>
+
 </div>
  <!-- /container -->
 
