@@ -94,34 +94,35 @@ session_start();
 	$_SESSION['date'] = $date;
 	$_SESSION['advisor'] = $advisor;
 	
-	$apptInfo = explode(" ", $apptStuff);
 	
-	$advisorID = $apptInfo[0];
-	$time = $apptInfo[1];
-	$advDate = $apptInfo[2];
 	
-	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `time` = '$time' AND `date` = '$advDate' AND `advisorID` = '$advisorID' AND `open` = 1 LIMIT 1";
-	$rs1 = $COMMON->executeQuery($sqlAddAppt,$_SERVER["SCRIPT_NAME"]);
-	
-	$sqlAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$advisorID'";
-	$rs2 = $COMMON->executeQuery($sqlAdvisorName,$_SERVER["SCRIPT_NAME"]);
-	$fetchAdvisorName = mysql_fetch_row($rs2);
-	
-	$sqlAddStudent = "INSERT INTO `students`(`studentID`, `fname`, `lname`, `major`) VALUES ('$studentID','$fname','$lname','$major')";
-	$rs3 = $COMMON->executeQuery($sqlAddStudent,$_SERVER["SCRIPT_NAME"]);
-	
-	echo("Thank you, $fname $lname, for using the Student Advising Web Page. You have successfully made an appointment with $fetchAdvisorName[0] $fetchAdvisorName[1] on ");
-	
-	$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
+	echo("$fname $lname, your appointment with ");
+			
+			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
 			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAppt = mysql_fetch_row($rsGetAppt);
-
-	echo("$fetchGetAppt[1] at $fetchGetAppt[0]. If you made a mistake and need to cancel this appointment please click the remove button below.<br><br>");
-	
-	echo("<form action='removeStudent.php' method='post' name='Form2'>");
-		echo("<button class='btn btn-lg btn-danger' type='submit' >Remove Appt.</button></form>");
+			
+			$getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[2]'";
+			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
+			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
+			
+		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
+		
+		//Link to delete appt - TOBEADDED
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0] has successfully been deleted. To create a new appointment please click the button below to view appointment times.<br><br>");
+	
+	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentID'";
+	$rsRemove = $COMMON->executeQuery($removeAppt,$_SERVER["SCRIPT_NAME"]);
+	
+	$removeStudent = "DELETE FROM `students` WHERE `studentID` = '$studentID'";
+	$rsRemoveStudent = $COMMON->executeQuery($removeStudent,$_SERVER["SCRIPT_NAME"]);
+	
+	echo("<form action='schedule.php' method='post' name='Form2'>");
+		echo("<button class='btn btn-lg btn-success' type='submit' >Look Up Appts.</button></form>");
+	
 	echo("<br><br>Otherwise log out by clicking menu in the top right corner and then by clicking log out. Thank you.");
+	
   
   ?>
 </div>

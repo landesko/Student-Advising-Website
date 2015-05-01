@@ -91,7 +91,7 @@ session_start();
 	
 	$advFname = ($_POST['advFname']);
 	$advLname = ($_POST['advLname']);
-	$advisorID = ($_POST['advisorID']);
+	$advisorID = strtoupper(($_POST['advisorID']));
 	
 	if ( $advFname == NULL)
 	{
@@ -138,16 +138,14 @@ session_start();
 			$endDay = $fetchRange[0];	
 		}
 		
-		if ($fetchDay[0] == NULL)
-		{
-			echo("You have not chosen a day when appointments are available. ");	
-		}
 		
-		echo("To quickly view the current week's schedule for an advisor please select from the options below and click Show Schedule");
+		echo("To set appointment availabilities or to remove exisiting appointment times from your availability please select Menu in the upper right hand corner and select which option you would like to configure.<br><br>");
 		
+		echo("To quickly view the current week's schedule for an advisor please select from the options below and click Show Schedule.");
+	
+	//WEEK AT A GLANCE	
 		echo("<div class='dropdown'>");
 	echo("<form action='advisorShowSchedule.php' method='post' target='_blank' name='advAvail'>");
-	echo("<br>");
 	echo("<button class='btn btn-sm btn-primary' type='submit' >Show Schedule</button>");
 	echo(" for: ");
 	echo("<select name='advisor'>");
@@ -183,7 +181,7 @@ session_start();
 		<button class='btn btn-sm btn-primary' type='submit' >Search</button>
       </form>");
 	  
-	  
+
 	  //SELECT DAY BY CALENDAR ACTION
 	  echo("<form action='advisorHome.php' method='post' name='Form1'>");
 		
@@ -192,7 +190,15 @@ session_start();
 	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
 	  
 	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form><br>");
-		echo("Once you have chosen a day please select which advisor you would like to print a schedule for.<br>");
+		
+		if ($fetchDay[0] == NULL)
+		{
+			echo("<b><font color='red'>You have not chosen a day when appointments are available.</font></b><br><br> ");	
+		}
+		else
+		{
+		echo("If you would like to print schedule information for an advisor on a chosen day please select the advisor at the top of the schedule table and click Print Schedule at the bottom of the page.<br>");
+		}
 	  	echo("<br></div>");
 	
 		if ($fetchDay[0] != NULL)
@@ -344,7 +350,7 @@ session_start();
 	
 	
 			
-		echo("</tbody></table><button class='btn btn-lg btn-primary' type='submit' >Submit</button></form> <br><br>");
+		echo("</tbody></table><button class='btn btn-lg btn-primary' type='submit' >Print Schedule</button></form> <br><br>");
 		}
 	
 	echo("</div>");

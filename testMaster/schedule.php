@@ -92,7 +92,7 @@ session_start();
 	
 	$fname = ($_POST['fname']);
 	$lname = ($_POST['lname']);
-	$studentID = ($_POST['studentID']);
+	$studentID = strtoupper(($_POST['studentID']));
 	$major = strtoupper(($_POST['major']));
 		
 	if ( $fname == NULL)
@@ -136,7 +136,12 @@ session_start();
 		
 		
 		//Link to delete appt - TOBEADDED
-		echo("$fetchGetAppt[1] at $fetchGetAppt[0]. If you need to cancel this appointment please click here.");
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0]. If you need to cancel this appointment please click the remove button below.<br> <br>");
+		
+		echo("<form action='removeStudent.php' method='post' name='Form2'>");
+		echo("<button class='btn btn-lg btn-danger' type='submit' >Remove Appt.</button></form>");
+		
+		echo("<br><br>Otherwise log out by clicking menu in the top right corner and then by clicking log out. Thank you.");
 	}
 	
 	//otherwise the main table to choose an appt is displayed
@@ -173,17 +178,20 @@ session_start();
 			$endDay = $fetchRange[0];	
 		}
 		
-		if ($fetchDay[0] == NULL)
-		{
-			echo("You have not chosen a day when appointments are available. ");	
-		}
-		
 		echo("Please select an appointment by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
 	
 	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
 	  
 	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form><br>");
+		
+		if ($fetchDay[0] == NULL)
+		{
+			echo("<b><font color='red'>You have not chosen a day when appointments are available.</font></b><br><br> ");	
+		}
+		else
+		{
 		echo("Once you have chosen a day please select an available appointment and then click Submit to make the appointment.<br>");
+		}
 	  	echo("<br></div>");
 	
 		if ($fetchDay[0] != NULL)
