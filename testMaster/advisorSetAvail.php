@@ -84,8 +84,7 @@ echo("<html><head><title></title>Set Availability For:</head><body>");
 $debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
-$sql = "select fName, lName from advisors";
-$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+
 $advName;
 $advFullName;
 $advFName;
@@ -94,30 +93,10 @@ $space=' ';
 $maj;
 $num=0;
 
-$sqlRange = "SELECT MAX(`date`) FROM  `apptTimes` WHERE 1 GROUP BY  `date`";
-$rsGetRange = $COMMON->executeQuery($sqlRange,$_SERVER["SCRIPT_NAME"]);
-$fetchRange = mysql_fetch_row($rsGetRange);
-
-$startDay = $fetchRange[0];
-//echo("$startDay<br>");
-$endDay = "";
-
-while ($fetchRange = mysql_fetch_row($rsGetRange))
-{
-	$endDay = $fetchRange[0];	
-}
-
-$sdate=Date("$startDay");
-$cdate=$sdate;
-$edate=Date("$endDay");
-
 $Tsql = "SELECT time_format(`time`,'%h:%i %p'), `time` FROM `times` WHERE 1;";
 $Trs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
-
 $array = array();
-
 $count = 0;
-
 while ($trow = mysql_fetch_row($Trs)){
 	$array[$count]=$trow;
 	$count++;
@@ -126,6 +105,8 @@ while ($trow = mysql_fetch_row($Trs)){
 echo("<form action='updateAdvisorAvail.php' method='post' name='form1'>");
 echo("<select name='advisor'>");
 
+$sql = "select fName, lName from advisors";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 while($row = mysql_fetch_row($rs))
 {
      $advFullName=$row[0].$space.$row[1];
@@ -146,55 +127,25 @@ echo("<input type='checkbox' name='fri' value='5' />Friday ");
 
 echo("<br>");
 echo(" Between: ");
-$Dsql = "SELECT * FROM `dates` WHERE 1;";
-$Drs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
+$sql = "select date from dates";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 echo("<select name='startdate'>");
-while($row = mysql_fetch_row($Drs)){
-		echo("<option value='");
-		echo($row[0]);
-		echo(">" . $cdate . "</option>");
+while($row = mysql_fetch_row($rs)){
+	echo("<option value='");
+	echo("$row[0]'");
+	echo(">" . $row[0] . "</option>");
 }
-
-//while($cdate < $edate){
-//	
-//	$i=0;
-//	while($i<7){
-//		echo("<option value='");
-//		echo("$cdate'");
-//		echo(">" . $cdate . "</option>");
-//		$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-//		$i=$i+1;
-//	}
-//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-//}
 echo("</select>");
-
-$cdate=$sdate;
 echo(" And: ");
-$Dsql = "SELECT * FROM `dates` WHERE 1;";
-$Drs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
+$sql = "select date from dates";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 echo("<select name='enddate'>");
-while($row = mysql_fetch_row($Drs)){
-		echo("<option value='");
-		echo($row[0]);
-		echo(">" . $cdate . "</option>");
+while($row = mysql_fetch_row($rs)){
+	echo("<option value='");
+	echo("$row[0]'");
+	echo(">" . $row[0] . "</option>");
 }
-//while($cdate < $edate){
-//	
-//	$i=0;
-//	while($i<7){
-//		echo("<option value='");
-//		echo("$cdate'");
-//		echo(">" . $cdate . "</option>");
-//		$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-//		$i=$i+1;
-//	}
-//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-//	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
-//}
 echo("</select>");
-
 
 $sql = "select major from majors";
 echo("<table width='100%'><tr><th>Start Time</th><th>Capacity</th><th>Major</th></tr>");
