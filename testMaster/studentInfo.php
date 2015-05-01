@@ -83,7 +83,7 @@ session_start();
 
   $studentIDlookup = ($_POST['studentID']);
 
-  $studentID =($_SESSION['studentID']);
+  //$studentID =($_SESSION['studentID']);
   // TODO:temp
   //$studentID = "VT25650";
 
@@ -102,21 +102,24 @@ session_start();
 
   // query 
 
+  /*
   var_dump($studentFname);
   var_dump($studentLname);
   var_dump($studentMajor);
+  */
 
   //checks to see if student already made an appointment
-  $madeAppt = "SELECT `studentID` FROM `appointments` WHERE `studentID` = '$studentID'";
+  $madeAppt = "SELECT `studentID` FROM `appointments` WHERE `studentID` = '$studentIDlookup'";
   $rsIsAppt = $COMMON->executeQuery($madeAppt,$_SERVER["SCRIPT_NAME"]);
   $fetchIsAppt = mysql_fetch_row($rsIsAppt);
 
-  echo("Student ID: $studentIDlookup corresponds to $studentFname $studentLname, whose major is $studentMajor.<br>");
+
+  echo("<br>Student ID: $studentIDlookup corresponds to $studentFname $studentLname, whose major is $studentMajor.<br>");
   
   //if student made the appointment a message is displayed detailing appt info
   if ( $fetchIsAppt != NULL)
   {
-      $getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
+      $getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentIDlookup'";
       $rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
       $fetchGetAppt = mysql_fetch_row($rsGetAppt);
       
