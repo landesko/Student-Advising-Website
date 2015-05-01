@@ -191,7 +191,6 @@ session_start();
 	
 	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
 	  
-	  
 	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form><br>");
 		echo("Once you have chosen a day please select which advisor you would like to print a schedule for.<br>");
 	  	echo("<br></div>");
@@ -216,8 +215,7 @@ session_start();
 			  $advisorSql = "SELECT * FROM `advisors` WHERE 1";
 			  $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
 	
-	
-	echo("<form class='formm-signin' action='advisorDaySchedule.php' method='post' target='_blank' name='Form2'>"); 
+	echo("<form class='formm-signin' action='advisorDaySchedule.php' method='post' name='Form2'>"); 
 	
 			   $advisorInfo = array();
 			  $advisorID = array();
