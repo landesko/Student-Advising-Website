@@ -125,7 +125,7 @@ while($row = mysql_fetch_row($rs)){
 					//empty table check
 					$emptytable=0;
 					
-					$sql = "SELECT * FROM `students` WHERE `studentID` = '$row2[1]' ";
+					$sql = "SELECT * FROM `students` WHERE `studentID` = '$row2[3]' ";
 					$rs3 = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 					$row3 = mysql_fetch_row($rs3);
 				
