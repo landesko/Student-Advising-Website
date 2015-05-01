@@ -81,12 +81,12 @@ session_start();
   $debug = false;
   $COMMON = new Common($debug);
 
-  $studentID = ($_POST['studentID']);
+  $studentIDlookup = ($_POST['studentID']);
   // TODO:temp
   //$studentID = "VT25650";
 
   // query student info
-  $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentID'";
+  $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentIDlookup'";
   $rs = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
   
   // index
