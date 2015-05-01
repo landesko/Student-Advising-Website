@@ -1,6 +1,8 @@
 <?php
 
 session_start();
+
+// COEIT
 ?>
 
 <html>
@@ -10,7 +12,7 @@ session_start();
 
 
 <head>
-<title>CMEE Advising Sign Up</title>
+<title>COEIT Advising Sign Up</title>
 <!-- ============================================================== -->
 <meta name="resource-type" content="document" />
 <meta name="distribution" content="global" />
@@ -67,7 +69,7 @@ session_start();
         </li>
       </ul>
       <div class="titleBar">
-             <h2>CMEE Student Advising Web Page</h2>
+             <h2>COEIT Student Advising Web Page</h2>
       </div>
        
     </div>
