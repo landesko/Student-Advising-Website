@@ -174,7 +174,18 @@ session_start();
 	echo("</form>");
 	echo("</div>");
 	
-		echo("<form action='advisorHome.php' method='post' name='Form1'>");
+		//SEARCH FOR STUDENT ID
+		echo("<br>To search specifically for a student please enter a valid student ID.<br>");
+		
+		echo("<form class='form-inline' action = 'studentInfo.php' method ='post'>
+        <label for='inputStudentID' class='sr-only'>Search For Student</label>
+        <input type='text' name = 'studentID' class='form-control' placeholder='Search For Student'  autofocus>
+		<button class='btn btn-sm btn-primary' type='submit' >Search</button>
+      </form>");
+	  
+	  
+	  //SELECT DAY BY CALENDAR ACTION
+	  echo("<form action='advisorHome.php' method='post' name='Form1'>");
 		
 		echo("<br>Otherwise please select a day to show appointments by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
 	
