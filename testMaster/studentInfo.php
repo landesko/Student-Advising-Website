@@ -81,12 +81,14 @@ session_start();
   $debug = false;
   $COMMON = new Common($debug);
 
-  $studentID = ($_POST['studentID']);
+  $studentIDlookup = ($_POST['studentID']);
+
+  $studentID =($_SESSION['studentID']);
   // TODO:temp
   //$studentID = "VT25650";
 
   // query student info
-  $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentID'";
+  $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentIDlookup'";
   $rs = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
   
   // index
@@ -98,10 +100,39 @@ session_start();
   $studentLname = $studentInfoArray[1];
   $studentMajor = $studentInfoArray[2];
 
+  // query 
+
   var_dump($studentFname);
   var_dump($studentLname);
   var_dump($studentMajor);
+
+  //checks to see if student already made an appointment
+  $madeAppt = "SELECT `studentID` FROM `appointments` WHERE `studentID` = '$studentID'";
+  $rsIsAppt = $COMMON->executeQuery($madeAppt,$_SERVER["SCRIPT_NAME"]);
+  $fetchIsAppt = mysql_fetch_row($rsIsAppt);
+
+  echo("Student ID: $studentIDlookup corresponds to $studentFname $studentLname, whose major is $studentMajor.<br>");
   
+  //if student made the appointment a message is displayed detailing appt info
+  if ( $fetchIsAppt != NULL)
+  {
+      $getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
+      $rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
+      $fetchGetAppt = mysql_fetch_row($rsGetAppt);
+      
+      $getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[2]'";
+      $rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
+      $fetchGetAdv = mysql_fetch_row($rsGetAdv);
+      
+    echo("The student has an appointment with $fetchGetAdv[0] $fetchGetAdv[1] on ");
+    
+    
+    //Link to delete appt - TOBEADDED
+    echo("$fetchGetAppt[1] at $fetchGetAppt[0].");
+  }
+  else{
+    echo("The student does not currently have an appointment.");
+  }
 ?>
 
 </div>
