@@ -219,7 +219,7 @@ session_start();
 					//echo advisor name
 					$advName=$advisorInfo[$i][1] . " " . $advisorInfo[$i][2];
 					$advisorID[$i] = $advisorInfo[$i][0];
-					echo("<input id='$advisorID[$i]' type='radio' name='advName' value='$advName' checked><label for='$advisorID[$i]'>");
+					echo("<input id='$advisorID[$i]' type='radio' name='advName' value='$advName $sqlDate' checked><label for='$advisorID[$i]'>");
 					$name = $advisorInfo[$i][2];
 					//var_dump($advisorInfo[$i][0]);
 					echo "$name";

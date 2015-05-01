@@ -80,37 +80,7 @@ session_start();
 
     $COMMON = new Common($debug);
   
-  	$apptStuff = ($_POST['time']);
-  	$date = ($_SESSION['date']);
-	$fname = ($_SESSION['fname']);
-	$lname = ($_SESSION['lname']);
-	$studentID = ($_SESSION['studentID']);
-	$major = ($_SESSION['major']);
-  
-  	$_SESSION['studentID'] = $studentID;
-	$_SESSION['fname'] = $fname;
-	$_SESSION['lname'] = $lname;
-	$_SESSION['major'] = $major;
-	$_SESSION['date'] = $date;
-	$_SESSION['advisor'] = $advisor;
-	
-	$apptInfo = explode(" ", $apptStuff);
-	
-	$advisorID = $apptInfo[0];
-	$time = $apptInfo[1];
-	$advDate = $apptInfo[2];
-	
-	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `time` = '$time' AND `date` = '$advDate' AND `advisorID` = '$advisorID' AND `open` = 1 LIMIT 1";
-	$rs1 = $COMMON->executeQuery($sqlAddAppt,$_SERVER["SCRIPT_NAME"]);
-	
-	$sqlAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$advisorID'";
-	$rs2 = $COMMON->executeQuery($sqlAdvisorName,$_SERVER["SCRIPT_NAME"]);
-	$fetchAdvisorName = mysql_fetch_row($rs2);
-	
-	$sqlAddStudent = "INSERT INTO `students`(`studentID`, `fname`, `lname`, `major`) VALUES ('$studentID','$fname','$lname','$major')";
-	$rs3 = $COMMON->executeQuery($sqlAddStudent,$_SERVER["SCRIPT_NAME"]);
-	
-	echo("Thank you, $fname $lname, for using the Student Advising Web Page. You have successfully made an appointment with $fetchAdvisorName[0] $fetchAdvisorName[1].");
+  	$studentID = $_POST['studentID'];
 
   
   ?>
