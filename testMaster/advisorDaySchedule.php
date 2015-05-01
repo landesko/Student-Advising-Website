@@ -64,9 +64,16 @@ $debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 
-$advisor = ($_POST['advName']);
+var_dump(($_POST['advName']));
 
-var_dump($advisor);
+$scheduleInfo = explode(" ", ($_POST['advName']));
+
+$advName = $scheduleInfo[0]. " " .$scheduleInfo[1] ;
+$theDate = $scheduleInfo[2];
+
+echo("$advName<br>");
+echo("$theDate");
+
 
 	
 ?>
