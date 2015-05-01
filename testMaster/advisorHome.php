@@ -177,7 +177,7 @@ session_start();
 		//SEARCH FOR STUDENT ID
 		echo("<br>To search specifically for a student please enter a valid student ID.<br>");
 		
-		echo("<form class='form-inline' action = 'studentInfo.php' method ='post'>
+		echo("<form class='form-inline' action = 'studentInfo.php' target='_blank' method ='post'>
         <label for='inputStudentID' class='sr-only'>Search For Student</label>
         <input type='text' name = 'studentID' class='form-control' placeholder='Search For Student'  autofocus>
 		<button class='btn btn-sm btn-primary' type='submit' >Search</button>
@@ -215,7 +215,7 @@ session_start();
 			  $advisorSql = "SELECT * FROM `advisors` WHERE 1";
 			  $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
 	
-	echo("<form class='formm-signin' action='advisorDaySchedule.php' method='post' name='Form2'>"); 
+	echo("<form class='formm-signin' action='advisorDaySchedule.php' target='_blank' method='post' name='Form2'>"); 
 	
 			   $advisorInfo = array();
 			  $advisorID = array();
