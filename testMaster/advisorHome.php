@@ -110,14 +110,6 @@ session_start();
 
     $sqlDate;
 	
-	
-	/*$sql = "SELECT * FROM `advisors` ";
-	$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-	$advName;
-	$advFullName;
-	$advFName;
-	$advLName;*/
-
 		if ($date == NULL)
 		  {
 			$sqlDate = "2015-03-02";
@@ -161,10 +153,19 @@ session_start();
 	echo("<select name='advisor'>");
 	echo("<option value=all>All Advisors</option>");
 	
-	while($row = mysql_fetch_row($rs))
+	$sqlGetAdvName = "SELECT * FROM `advisors` ";
+	$rsGetAdvName = $COMMON->executeQuery($sqlGetAdvName, $_SERVER["SCRIPT_NAME"]);
+	$advName;
+	$space = " ";
+	$advFullName;
+	$advFName;
+	$advLName;
+	$advName;
+	
+	while($rowAdv = mysql_fetch_row($rsGetAdvName))
 	{
-		 $advFullName=$row[1].$space.$row[2];
-		 $advName=$row[1] . " " . $row[2];
+		 $advFullName=$rowAdv[1].$space.$rowAdv[2];
+		 $advName=$rowAdv[1] . " " . $rowAdv[2];
 		 echo("<option value='");
 		 echo("$advName'");
 		 echo(">" . $advName . "</option>");
@@ -203,6 +204,7 @@ session_start();
 			  $advisorSql = "SELECT * FROM `advisors` WHERE 1";
 			  $rs = $COMMON->executeQuery($advisorSql,$_SERVER["SCRIPT_NAME"]);
 	
+	echo("<form class='formm-signin' action='advisorDaySchedule.php' method='post' name='Form2'>"); 
 	
 			   $advisorInfo = array();
 			  $advisorID = array();
@@ -213,13 +215,15 @@ session_start();
 			  }
 				// advisor names
 				for ($i= 0; $i < $count; $i++) { 
-					echo "<th class='warning'>";
+					echo "<th  class='advisorSlotOpen' class='warning'>";
 					//echo advisor name
+					$advName=$advisorInfo[$i][1] . " " . $advisorInfo[$i][2];
+					$advisorID[$i] = $advisorInfo[$i][0];
+					echo("<input id='$advisorID[$i]' type='radio' name='advName' value='$advName' checked><label for='$advisorID[$i]'>");
 					$name = $advisorInfo[$i][2];
 					//var_dump($advisorInfo[$i][0]);
-					$advisorID[$i] = $advisorInfo[$i][0];
 					echo "$name";
-					echo "</th>";
+					echo "</label></th>";
 				}
 			
 	
@@ -242,8 +246,6 @@ session_start();
 				$apptTimeInfo[$count] = $row;
 				$count++;
 			  }
-			  
-			  echo("<form class='formm-signin' action='added.php' method='post' name='Form2'>"); 
 			  
 			  $rowColor = 0; 
 			  
