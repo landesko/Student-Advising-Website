@@ -154,10 +154,21 @@ while($num < $count){
 	echo("<tr><td>"); echo($array[$num][0]); echo("</td><td>");
 	echo("<select name='cap$num'>");
 	$i=0;
-	while($i<12){
+	while($i<11){
 		echo("<option value='");
 		echo("$i'");
-		echo(">" . $i . "</option>");
+		if($i == 0)
+		{
+		echo(">" . $i . " - NOT SET</option>");
+		}
+		else if($i == 1)
+		{
+		echo(">" . $i . " - Single Appt.</option>");
+		}
+		else
+		{
+		echo(">" . $i . " - Group Appt.</option>");	
+		}
 		$i=$i+1;
 	}
 	echo("</select>");
