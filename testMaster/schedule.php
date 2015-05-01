@@ -60,7 +60,7 @@ session_start();
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="advisorInfo.php">Advising Info</a></li>
+            <li><a href="http://coeit.umbc.edu/undergraduate-student-services-engineering-and-computer-science-majors">Advising Info</a></li>
             <li class="divider"></li>
             <li><a href="studentIndex.php">Log Out</a></li>
           </ul>
