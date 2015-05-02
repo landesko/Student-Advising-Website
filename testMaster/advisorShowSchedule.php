@@ -182,11 +182,24 @@ while($row = mysql_fetch_row($rs)){
 			echo("</table>");
 	}
 }
+
+echo("<div class='no-print'>");
+echo("<br><br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
+echo("</div>");
 	
 ?>
 </div>
-</body>
 
 <script type="text/javascript">
     window.print();
 </script>
+
+<script language="javascript" type="text/javascript"> 
+function windowClose() { 
+window.open('','_parent',''); 
+window.close();
+} 
+</script>
+
+</html>
+</body>

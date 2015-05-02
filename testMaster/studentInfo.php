@@ -114,28 +114,42 @@ session_start();
   $fetchIsAppt = mysql_fetch_row($rsIsAppt);
 
 
-  echo("<br>Student ID: $studentIDlookup corresponds to $studentFname $studentLname, whose major is $studentMajor.<br>");
-  
-  //if student made the appointment a message is displayed detailing appt info
-  if ( $fetchIsAppt != NULL)
-  {
-      $getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentIDlookup'";
-      $rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
-      $fetchGetAppt = mysql_fetch_row($rsGetAppt);
-      
-      $getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[2]'";
-      $rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
-      $fetchGetAdv = mysql_fetch_row($rsGetAdv);
-      
-    echo("The student has an appointment with $fetchGetAdv[0] $fetchGetAdv[1] on ");
-    
-    
-    //Link to delete appt - TOBEADDED
-    echo("$fetchGetAppt[1] at $fetchGetAppt[0].");
-  }
-  else{
-    echo("The student does not currently have an appointment.");
-  }
+if ($fetchIsAppt[0] == NULL)
+{
+	echo("That student has not yet made any appointments.");	
+}
+else
+{
+
+	  echo("<br>Student ID: $studentIDlookup corresponds to $studentFname $studentLname, whose major is $studentMajor.<br>");
+	  
+	  //if student made the appointment a message is displayed detailing appt info
+	  if ( $fetchIsAppt != NULL)
+	  {
+		  $getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentIDlookup'";
+		  $rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
+		  $fetchGetAppt = mysql_fetch_row($rsGetAppt);
+		  
+		  $getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[2]'";
+		  $rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
+		  $fetchGetAdv = mysql_fetch_row($rsGetAdv);
+		  
+		echo("The student has an appointment with $fetchGetAdv[0] $fetchGetAdv[1] on ");
+		
+		
+		//Link to delete appt - TOBEADDED
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0].");
+	  }
+	  else{
+		echo("The student does not currently have an appointment.");
+	  }
+}
+
+//echo("<input type='button' value='Close this window' onclick='windowClose()'>");
+
+echo("<div class='no-print'>");
+echo("<br><br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
+echo("</div>");
 ?>
 
 </div>
@@ -154,6 +168,13 @@ $(document).ready(function(){
 			console.log("clicked");
 		});
 });
+</script>
+
+<script language="javascript" type="text/javascript"> 
+function windowClose() { 
+window.open('','_parent',''); 
+window.close();
+} 
 </script>
 
 </body>
