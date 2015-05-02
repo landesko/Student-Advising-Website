@@ -100,18 +100,22 @@ session_start();
 	$time = $apptInfo[1];
 	$advDate = $apptInfo[2];
 	
+	//update `appointments` table
 	$sqlAddAppt = "UPDATE `appointments` SET `open` = 0 , `studentID` = '$studentID' WHERE `time` = '$time' AND `date` = '$advDate' AND `advisorID` = '$advisorID' AND `open` = 1 LIMIT 1";
 	$rs1 = $COMMON->executeQuery($sqlAddAppt,$_SERVER["SCRIPT_NAME"]);
 	
+	//pull advisor name from `advisor` table
 	$sqlAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$advisorID'";
 	$rs2 = $COMMON->executeQuery($sqlAdvisorName,$_SERVER["SCRIPT_NAME"]);
 	$fetchAdvisorName = mysql_fetch_row($rs2);
 	
+	//insert student into `students` table
 	$sqlAddStudent = "INSERT INTO `students`(`studentID`, `fname`, `lname`, `major`) VALUES ('$studentID','$fname','$lname','$major')";
 	$rs3 = $COMMON->executeQuery($sqlAddStudent,$_SERVER["SCRIPT_NAME"]);
 	
 	echo("Thank you, $fname $lname, for using the Student Advising Web Page. You have successfully made an appointment with $fetchAdvisorName[0] $fetchAdvisorName[1] on ");
 	
+	//pull information about the appointment from `appointments`
 	$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
 			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAppt = mysql_fetch_row($rsGetAppt);

@@ -98,18 +98,18 @@ session_start();
 	
 	echo("$fname $lname, your appointment with ");
 			
+			//pulls appointment info from `appointments`
 			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
 			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAppt = mysql_fetch_row($rsGetAppt);
 			
+			//pulls advisor name for appointment info from `advisors`
 			$getAdvisorName = "SELECT `fname`, `lname` FROM `advisors` WHERE `advisorID` = '$fetchGetAppt[2]'";
 			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
 			
 		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
-		
-		//Link to delete appt - TOBEADDED
 		echo("$fetchGetAppt[1] at $fetchGetAppt[0] has successfully been deleted. To create a new appointment please click the button below to view appointment times.<br><br>");
 	
 	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentID'";

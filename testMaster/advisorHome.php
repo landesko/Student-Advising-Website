@@ -102,10 +102,10 @@ session_start();
 	}
 	
 	
-	$_SESSION['studentID'] = $advisorID;
+	$_SESSION['advisorID'] = $advisorID;
 	$_SESSION['advFname'] = $advFname;
 	$_SESSION['advLname'] = $advLname;
-	$_SESSION['major'] = $major;
+	//$_SESSION['major'] = $major;
 	$_SESSION['date'] = $date;
 
     $sqlDate;
