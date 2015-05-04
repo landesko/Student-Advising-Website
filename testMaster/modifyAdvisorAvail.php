@@ -88,7 +88,7 @@ $COMMON = new Common($debug); // common methods
 
 
 echo("<p>Advisor Availability Updated</p>");
-echo("<form action='modifySetAvail.php' method='post' name='advAvail'>");
+echo("<form action='advisorChangeAvail.php' method='post' name='advAvail'>");
 echo("<button class='btn btn-sm btn-primary' type='submit' >Set More Availabilities</button>");
 echo("</form>");
 
