@@ -60,12 +60,12 @@ $debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 
-$advisor = ($_POST['advisor']);
+$advisorShow = ($_POST['advisor']);
 $advID;
 $stuID;
 
 echo("<div class='titleBar'>
-<h2>This Week's Schedule For $advisor</h2>
+<h2>This Week's Schedule For $advisorShow</h2>
 </div>");
 
 $thisMonday = date('2015-04-20');;
@@ -83,30 +83,30 @@ $sql = "SELECT * FROM `advisors`";
 $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 while($row = mysql_fetch_row($rs)){
 	$advName=$row[1] . " " . $row[2];
-	if($advName == $advisor){
+	if($advName == $advisorShow){
 		$advID=$row[0];
 	}
 }
 
-if($advisor == "all"){
+if($advisorShow == "all"){
 	$sql = "SELECT * FROM `advisors`";	
 }
 else{
-	//$sql = "SELECT * FROM 'advisors' WHERE concat(fname,' ',lname) = '$advisor'";
+	//$sql = "SELECT * FROM 'advisors' WHERE concat(fname,' ',lname) = '$advisorShow'";
 	$sql = "SELECT * FROM `advisors` WHERE `advisorID` = '$advID'";
 }
 
 $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 echo("<div class='container'>");//
 while($row = mysql_fetch_row($rs)){
-	$advisor=$row[1] . " " . $row[2];
+	$advisorShow=$row[1] . " " . $row[2];
 	$advID=$row[0];
 	$i=0;
 	$curDay = $thisMonday;
 	//echo("<div class='container'>");//
 	while($i < 5){
 		$emptytable=1;
-		echo("<br>".$advisor." on ".$curDay);
+		echo("<br>".$advisorShow." on ".$curDay);
 		echo("<table width='100%'>");
 		echo("<th>Time</th><th>Name</th><th>Student ID</th><th>Major</th>");
 			//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$curDay'";
@@ -185,7 +185,7 @@ while($row = mysql_fetch_row($rs)){
 
 echo("<div class='no-print'>");
 echo("<br><br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
-echo("</div>");
+echo("<br><br></div>");
 	
 ?>
 </div>

@@ -60,7 +60,9 @@ session_start();
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="advisorSetAvail.php">Set Availability</a></li>
+            <li><a href="advisorSetAvail.php">Add Availability</a></li>
+            <li class="divider"></li>
+            <li><a href="advisorChangeAvail.php">Remove Availability</a></li>
             <li class="divider"></li>
             <li><a href="advisorHome.php">Home</a></li>
             <li class="divider"></li>
