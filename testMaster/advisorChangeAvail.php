@@ -77,10 +77,200 @@ session_start();
 
 <div class="container">
 <div class="tableBar">
+
+
+
+
+
+
+
+
 <?php
 
-echo("dummy advisor change appointment page");
+echo("<html><head><title></title>Edit Appointments For:</head><body>");
+
+$debug = false;
+include('CommonMethods.php');
+$COMMON = new Common($debug); // common methods
+
+$advName;
+$advFullName;
+$advFName;
+$advLName;
+$space=' ';
+$maj;
+$num=0;
+
+$Tsql = "SELECT time_format(`time`,'%h:%i %p'), `time` FROM `times` WHERE 1;";
+$Trs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
+$array = array();
+$count = 0;
+while ($trow = mysql_fetch_row($Trs)){
+	$array[$count]=$trow;
+	$count++;
+}
+
+echo("<form action='advisorChangeAvail.php' method='post' name='form1'>");
+echo("<select name='advisor'>");
+
+$sql = "select fName, lName from advisors";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+while($row = mysql_fetch_row($rs))
+{
+     $advFullName=$row[0].$space.$row[1];
+     $advName=$row[0] . " " . $row[1];
+     echo("<option value='");
+     echo("$advName'");
+     echo(">" . $advName . "</option>");
+}
+echo("</select>");
+echo("<br>");
+echo(" Between: ");
+$sql = "select date from dates";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+echo("<select name='startdate'>");
+while($row = mysql_fetch_row($rs)){
+	echo("<option value='");
+	echo("$row[0]'");
+	echo(">" . $row[0] . "</option>");
+}
+echo("</select>");
+echo(" And: ");
+$sql = "select date from dates";
+$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+echo("<select name='enddate'>");
+while($row = mysql_fetch_row($rs)){
+	echo("<option value='");
+	echo("$row[0]'");
+	echo(">" . $row[0] . "</option>");
+}
+echo("</select>");
+echo("<button class='btn btn-sm btn-primary' type='submit' >View</button>");
+echo("</form>");
+
+
+
+if(isset($_POST['advisor'])){
+	//echo("<br><br>dump<br><br>");
+	//var_dump($_POST);
+	//echo("<br><br>end dump<br><br>");
+
+	$startingDate = ($_POST['startdate']);
+	$endingDate = ($_POST['enddate']);
+
+	$advisorFullName = ($_POST['advisor']);
+	$advisorIdNumber;
+	$sql = "select * from advisors";
+	$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+	while($row = mysql_fetch_row($rs))
+	{
+		$advName=$row[1] . " " . $row[2];
+		if ($advName == $advisorFullName){
+			$advisorIdNumber = $row[0];
+		}	
+	}
+	$currentDate;
+	$currentTime;
+	$currentCapacity;
+	$currentMajor;
+	$currentStudents = array();
+	$majorsArry = array();
+	$sql_dates = "SELECT * FROM `dates` WHERE `date` BETWEEN '$startingDate' AND '$endingDate'";
+	//$sql_dates = "select * from dates where date between $startingDate and $endingDate;";
+	$rs_dates = $COMMON->executeQuery($sql_dates, $_SERVER["SCRIPT_NAME"]);
+
+	echo("<form action='modifyAdvisorAvail.php' method='post' name='form2'>");
+	$num=0;
+	while($row_dates = mysql_fetch_row($rs_dates)){
+		$currentDate = $row_dates[0];
+		echo("current appointments for " . $advisorFullName . " on " . $currentDate . " ");
+		echo("<table width='100%'><tr><th>Start Time</th><th>Capacity</th><th>Major</th></tr>");
+		$sql_times = "select * from times where 1;";
+		$rs_times = $COMMON->executeQuery($sql_times, $_SERVER["SCRIPT_NAME"]);
+		while($row_times = mysql_fetch_row($rs_times)){
+			$currentTime = $row_times[0];
+			echo("<tr>");
+			echo("<td>".$currentTime."</td>");
+			//SELECT *FROM `appointments`WHERE `date` = '2015-04-20'AND `time` = '08:00:00'AND `advisorID` = 'AA12345'
+			//$sql_capacity = "SELECT COUNT(*) as foo FROM `appointments` WHERE `date` = '$currentDate' AND `time` = '$currentTime' AND `advisorID` = '$advisorIdNumber'";
+			//$sql_capacity = "select count(`key`) from `appointments` where `date` = $currentDate and `time` = $currentTime and `advisorID` = $advisorIdNumber";
+			$sql_capacity = "SELECT * FROM `appointments` WHERE `date` = '$currentDate' AND `time` = '$currentTime' AND `advisorID` = '$advisorIdNumber'";
+			$rs_capacity = $COMMON->executeQuery($sql_capacity, $_SERVER["SCRIPT_NAME"]);
+			$currentCapacity=0;
+			$currentMajor=NULL;
+			while($row_capacity = mysql_fetch_row($rs_capacity)){
+				$currentStudents[$currentCapacity]=$row_capacity[3];
+				$currentMajor=$row_capacity[5];
+				$currentCapacity++;
+			}
+			echo("<td>");
+			echo("<select name='cap$num'>");
+			$i=0;
+			while($i<11){
+				if($i == $currentCapacity){
+					echo("<option value='");
+					echo("$i' selected");
+				}
+				else{
+					echo("<option value='");
+					echo("$i'");
+				}
+				if($i == 0){
+					echo(">" . $i . " - NOT SET</option>");
+				}
+				else if($i == 1){
+					echo(">" . $i . " - Single Appt.</option>");
+				}
+				else{
+					echo(">" . $i . " - Group Appt.</option>");	
+				}
+				$i=$i+1;
+			}
+			echo("</select>");
+			echo("</td><td>");
+			
+			$sql_majors = "SELECT * FROM `majors`";
+			$rs_majors = $COMMON->executeQuery($sql_majors, $_SERVER["SCRIPT_NAME"]);
+			echo("<select name='major$num'><option value=any>any</option>");
+			while($row_maj = mysql_fetch_row($rs_majors)){
+				$maj=$row_maj[0];
+				if($maj == $currentMajor){
+					echo("<option value='");
+					echo("$maj' selected");
+					echo(">" . $maj . "</option>");
+				}
+				else{
+					echo("<option value='");
+					echo("$maj'");
+					echo(">" . $maj . "</option>");
+				}
+			}
+			echo("</select>");
+			echo("</td></tr>");
+			
+			
+			$num++;
+		}//end time
+		echo("</table>");
+	}//end date
+	
+echo("<input type='hidden' name='startdate' value='$startingDate'>");
+echo("<input type='hidden' name='enddate' value='$endingDate'>");
+echo("<input type='hidden' name='advisorID' value='$advisorIdNumber'>");
+
+echo("<button class='btn btn-sm btn-primary' type='submit' >Update Availability</button>");
+echo("</form>");
+}//endif
+
 ?>
+
+
+
+
+
+
+
+
 
 
 </div>
