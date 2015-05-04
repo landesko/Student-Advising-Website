@@ -186,7 +186,7 @@ if(isset($_POST['advisor'])){
 	while($row_dates = mysql_fetch_row($rs_dates)){
 		$currentDate = $row_dates[0];
 		echo("current appointments for " . $advisorFullName . " on " . $currentDate . " ");
-		echo("<table width='100%'><tr><th>Start Time</th><th>Capacity</th><th>Major</th></tr>");
+		echo("<table width='100%'><tr><th>Start Time</th><th>Set Capacity</th><th>Major</th></tr>");
 		$sql_times = "select * from times where 1;";
 		$rs_times = $COMMON->executeQuery($sql_times, $_SERVER["SCRIPT_NAME"]);
 		while($row_times = mysql_fetch_row($rs_times)){
@@ -218,7 +218,7 @@ if(isset($_POST['advisor'])){
 					echo("$i'");
 				}
 				if($i == 0){
-					echo(">" . $i . " - NOT SET</option>");
+					echo(">" . $i . " / NOT SET</option>");
 				}
 				else if($i == 1){
 					echo(">" . $i . " - Single Appt.</option>");
@@ -260,9 +260,14 @@ echo("<input type='hidden' name='startdate' value='$startingDate'>");
 echo("<input type='hidden' name='enddate' value='$endingDate'>");
 echo("<input type='hidden' name='advisorID' value='$advisorIdNumber'>");
 
-echo("<button class='btn btn-sm btn-primary' type='submit' >Update Availability</button>");
+echo("<button class='btn btn-m btn-warning' type='submit' >Update Availability</button>");
 echo("</form>");
 }//endif
+
+echo("-OR-<br><br>");
+echo("<form action='advisorHome.php' method='post' name='form3'>");
+echo("<button class='btn btn-m btn-primary' type='submit' >Make No Changes</button>");
+echo("</form>")
 
 ?>
 
