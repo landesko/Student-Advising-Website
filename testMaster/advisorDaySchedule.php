@@ -183,3 +183,14 @@ window.open('','_parent','');
 window.close();
 } 
 </script>
+
+<script type = "text/javascript" >
+    history.pushState(null, null, 'advisorDaySchedule.php');
+    window.addEventListener('popstate', function(event) {
+    	history.pushState(null, null, 'advisorDaySchedule.php');
+    });
+	window.onpopstate=function()
+	{
+	  alert("Use of the back button has been disabled, please navigate the website using the links on the page.");
+	}
+</script>

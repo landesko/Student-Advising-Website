@@ -29,3 +29,22 @@ body{
     }
 }
 
+.theContainer
+{
+	width: 100%;
+	position: relative;	
+}
+
+.leftContainer
+{
+	float: left;
+	width: 50%;
+	padding-right: 25px;
+}
+
+.rightContainer
+{
+	float: left;
+	width: 50%;	
+	padding-right: 25px;
+}

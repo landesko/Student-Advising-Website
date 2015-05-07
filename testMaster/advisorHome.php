@@ -143,12 +143,14 @@ session_start();
 		
 		echo("To set appointment availabilities or to remove exisiting appointment times from your availability please select Menu in the upper right hand corner and select which option you would like to configure.<br><br>");
 		
+		echo("<div class='theContainer'><div class='leftContainer'>");
+		
 		echo("To quickly view the current week's schedule for an advisor please select from the options below and click Show Schedule.");
 	
 	//WEEK AT A GLANCE	
 		echo("<div class='dropdown'>");
 	echo("<form action='advisorShowSchedule.php' method='post' target='_blank' name='advAvail'>");
-	echo("<button class='btn btn-sm btn-primary' type='submit' >Show Schedule</button>");
+	echo("<button class='btn btn-sm btn-primary' type='submit' >Week At A Glance</button>");
 	echo(" for: ");
 	echo("<select name='advisor'>");
 	echo("<option value=all>All Advisors</option>");
@@ -174,8 +176,10 @@ session_start();
 	echo("</form>");
 	echo("</div>");
 	
+	echo("</div><div class='rightContainer'>");
+	
 		//SEARCH FOR STUDENT ID
-		echo("<br>To search specifically for a student please enter a valid student ID.<br>");
+		echo("To look up info on a student and / or delete their appointment please enter a valid student ID. (<a HREF='javascript:history.go(0)'>Refresh</a> page after deletions.)<br>");
 		
 		echo("<form class='form-inline' action = 'studentInfo.php' target='_blank' method ='post'>
         <label for='inputStudentID' class='sr-only'>Search For Student</label>
@@ -183,25 +187,27 @@ session_start();
 		<button class='btn btn-sm btn-primary' type='submit' >Search</button>
       </form>");
 	  
+	echo("</div></div></div><div class='container'>");
+	  
 
 	  //SELECT DAY BY CALENDAR ACTION
-	  echo("<form action='advisorHome.php' method='post' name='Form1'>");
+	  echo("<form action='advisorHome.php' method='post' name='Form5'>");
 		
-		echo("<br>Otherwise please select a day to show appointments by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
+		echo("Otherwise please select a day to show appointments by choosing a weekday between $startDay and $endDay. Switch days by using the calendar below.<br>");
 	
 	  	echo("<input class='date-picker' type='text' value='$sqlDate' name='date'/>");
 	  
-	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form><br>");
+	  	echo("<button class='btn btn-sm btn-primary' type='submit' >Go</button></form>");
 		
 		if ($fetchDay[0] == NULL)
 		{
-			echo("<b><font color='red'>You have not chosen a day when appointments are available.</font></b><br><br> ");	
+			echo("<b><font color='red'>You have not chosen a day when appointments are available.</font></b><br> ");	
 		}
 		else
 		{
-		echo("If you would like to print schedule information for an advisor on a chosen day please select the advisor at the top of the schedule table and click Print Schedule at the bottom of the page.<br>");
+		echo("If you would like to print schedule information for an advisor on a chosen day please select the advisor at the top of the schedule table and click Print Schedule at the bottom of the page.");
 		}
-	  	echo("<br></div>");
+	  	echo("<br></div></div>");
 	
 		if ($fetchDay[0] != NULL)
 		{
@@ -225,6 +231,8 @@ session_start();
 	
 	echo("<form class='formm-signin' action='advisorDaySchedule.php' target='_blank' method='post' name='Form2'>"); 
 	
+	//echo("<button class='btn btn-lg btn-primary' type='submit' >Print Schedule</button><br><br>");
+	
 			   $advisorInfo = array();
 			  $advisorID = array();
 			  $count = 0;
@@ -241,7 +249,7 @@ session_start();
 					echo("<input id='$advisorID[$i]' type='radio' name='advName' value='$advName $sqlDate' checked><label for='$advisorID[$i]'>");
 					$name = $advisorInfo[$i][2];
 					//var_dump($advisorInfo[$i][0]);
-					echo "$name";
+					echo "<u>$name</u>";
 					echo "</label></th>";
 				}
 			
@@ -301,7 +309,10 @@ session_start();
 					  {
 						 if ($fetchStudentIDs[0] != NULL)
 						 {
-						  echo("$fetchStudentIDs[0]<br>");
+						 $getStudentNames = "Select `fname`, `lname` FROM `students` WHERE `studentID` = '$fetchStudentIDs[0]'";
+						 $getName = $COMMON->executeQuery($getStudentNames,$_SERVER["SCRIPT_NAME"]);
+						 $fetchStudentNames = mysql_fetch_row($getName);
+						  echo("$fetchStudentIDs[0] - $fetchStudentNames[0] $fetchStudentNames[1]<br>");
 						 }
 						  $group++;
 						  if($fetchStudentIDs[0] == NULL)
@@ -371,6 +382,17 @@ $(document).ready(function(){
 			console.log("clicked");
 		});
 });
+</script>
+
+<script type = "text/javascript" >
+    history.pushState(null, null, 'advisorHome.php');
+    window.addEventListener('popstate', function(event) {
+    	history.pushState(null, null, 'advisorHome.php');
+    });
+	window.onpopstate=function()
+	{
+	  alert("Use of the back button has been disabled, please navigate the website using the links on the page.");
+	}
 </script>
 
 </body>

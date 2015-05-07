@@ -85,7 +85,8 @@ session_start();
   $debug = false;
   $COMMON = new Common($debug);
 
-  $studentIDlookup = ($_POST['studentID']);
+  $studentIDlookup = ($_POST['studentID']);	
+  $_SESSION['studentIDforDelete'] = $studentIDlookup;
 
   //$studentID =($_SESSION['studentID']);
   // TODO:temp
@@ -139,10 +140,12 @@ else
 		  $fetchGetAdv = mysql_fetch_row($rsGetAdv);
 		  
 		echo("The student has an appointment with $fetchGetAdv[0] $fetchGetAdv[1] on ");
-		
-		
-		//Link to delete appt - TOBEADDED
 		echo("$fetchGetAppt[1] at $fetchGetAppt[0].");
+		
+		echo("<br><br>Click below if you would like to remove this students appointment: <br>");
+		
+		echo("<form action='advisorRemoveStudent.php' method='post' name='Form2'>");
+		echo("<button class='btn btn-lg btn-danger' type='submit' >Remove Student Appt.</button></form>");
 	  }
 	  else{
 		echo("The student does not currently have an appointment.");
@@ -152,7 +155,7 @@ else
 //echo("<input type='button' value='Close this window' onclick='windowClose()'>");
 
 echo("<div class='no-print'>");
-echo("<br><br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
+echo("Otherwise: <br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
 echo("</div>");
 ?>
 
@@ -179,6 +182,17 @@ function windowClose() {
 window.open('','_parent',''); 
 window.close();
 } 
+</script>
+
+<script type = "text/javascript" >
+    history.pushState(null, null, 'studentInfo.php');
+    window.addEventListener('popstate', function(event) {
+    	history.pushState(null, null, 'studentInfo.php');
+    });
+	window.onpopstate=function()
+	{
+	  alert("Use of the back button has been disabled, please navigate the website using the links on the page.");
+	}
 </script>
 
 </body>

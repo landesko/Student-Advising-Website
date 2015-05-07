@@ -229,7 +229,7 @@ session_start();
 					//echo advisor name
 					$name = $advisorInfo[$i][2];
 					$advisorID[$i] = $advisorInfo[$i][0];
-					echo "$name";
+					echo "<u>$name</u>";
 					echo "</th>";
 				}
 	
@@ -344,6 +344,17 @@ $(document).ready(function(){
 			console.log("clicked");
 		});
 });
+</script>
+
+<script type = "text/javascript" >
+    history.pushState(null, null, 'schedule.php');
+    window.addEventListener('popstate', function(event) {
+    	history.pushState(null, null, 'schedule.php');
+    });
+	window.onpopstate=function()
+	{
+	  alert("Use of the back button has been disabled, please navigate the website using the links on the page.");
+	}
 </script>
 
 </body>

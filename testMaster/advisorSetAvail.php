@@ -211,5 +211,16 @@ $(document).ready(function(){
 });
 </script>
 
+<script type = "text/javascript" >
+    history.pushState(null, null, 'advisorSetAvail.php');
+    window.addEventListener('popstate', function(event) {
+    	history.pushState(null, null, 'advisorSetAvail.php');
+    });
+	window.onpopstate=function()
+	{
+	  alert("Use of the back button has been disabled, please navigate the website using the links on the page.");
+	}
+</script>
+
 </body>
 </html>

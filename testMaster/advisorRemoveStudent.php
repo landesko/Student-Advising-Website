@@ -61,7 +61,7 @@ session_start();
           <ul class="dropdown-menu" role="menu">
             <li><a href="http://coeit.umbc.edu/undergraduate-student-services-engineering-and-computer-science-majors">Advising Info</a></li>
             <li class="divider"></li>
-            <li><a href="studentIndex.php">Log Out</a></li>
+            <li><a href="css/studentIndex.php">Log Out</a></li>
           </ul>
         </li>
       </ul>
@@ -80,26 +80,25 @@ session_start();
 
     $COMMON = new Common($debug);
   
-  	$apptStuff = ($_POST['time']);
-  	$date = ($_SESSION['date']);
-	$fname = ($_SESSION['fname']);
-	$lname = ($_SESSION['lname']);
-	$studentID = ($_SESSION['studentID']);
-	$major = ($_SESSION['major']);
-  
-  	$_SESSION['studentID'] = $studentID;
-	$_SESSION['fname'] = $fname;
-	$_SESSION['lname'] = $lname;
-	$_SESSION['major'] = $major;
-	$_SESSION['date'] = $date;
-	$_SESSION['advisor'] = $advisor;
+  	$studentIDforDelete = $_SESSION['studentIDforDelete'];
+	
+		 $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentIDforDelete'";
+	  $rs = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
+	  
+	  // index
+	  //  0 == fname
+	  //  1 == lname
+	  //  2 == major
+	  $studentInfoArray = mysql_fetch_row($rs);
+	  $studentFname = $studentInfoArray[0]; 
+	  $studentLname = $studentInfoArray[1];
+	  $studentMajor = $studentInfoArray[2];
 	
 	
-	
-	echo("$fname $lname, your appointment with ");
+	echo("Student, $studentFname $studentLname's, appointment with ");
 			
 			//pulls appointment info from `appointments`
-			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
+			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentIDforDelete'";
 			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAppt = mysql_fetch_row($rsGetAppt);
 			
@@ -110,18 +109,19 @@ session_start();
 			
 		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
-		echo("$fetchGetAppt[1] at $fetchGetAppt[0] has successfully been deleted. To create a new appointment please click the button below to view appointment times.<br><br>");
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0] has successfully been deleted.");
 	
-	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentID'";
+	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentIDforDelete'";
 	$rsRemove = $COMMON->executeQuery($removeAppt,$_SERVER["SCRIPT_NAME"]);
 	
-	$removeStudent = "DELETE FROM `students` WHERE `studentID` = '$studentID'";
+	$removeStudent = "DELETE FROM `students` WHERE `studentID` = '$studentIDforDelete'";
 	$rsRemoveStudent = $COMMON->executeQuery($removeStudent,$_SERVER["SCRIPT_NAME"]);
 	
-	echo("<form action='schedule.php' method='post' name='Form2'>");
-		echo("<button class='btn btn-lg btn-success' type='submit' >Look Up Appts.</button></form>");
+	echo("<br><br>Please close this window by clicking the button below: ");
 	
-	echo("<br><br>Otherwise log out by clicking menu in the top right corner and then by clicking log out. Thank you.");
+	echo("<div class='no-print'>");
+echo("<br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
+echo("<br><br></div>");
 	
   
   ?>
@@ -143,10 +143,17 @@ $(document).ready(function(){
 });
 </script>
 
+<script language="javascript" type="text/javascript"> 
+function windowClose() { 
+window.open('','_parent',''); 
+window.close();
+} 
+</script>
+
 <script type = "text/javascript" >
-    history.pushState(null, null, 'removeStudent.php');
+    history.pushState(null, null, 'advisorRemoveStudent.php');
     window.addEventListener('popstate', function(event) {
-    	history.pushState(null, null, 'removeStudent.php');
+    	history.pushState(null, null, 'advisorRemoveStudent.php');
     });
 	window.onpopstate=function()
 	{
