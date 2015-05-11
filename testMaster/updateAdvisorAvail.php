@@ -96,26 +96,10 @@ $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 while($row = mysql_fetch_row($rs))
 {
      $advName=$row[1] . " " . $row[2];
-	 //echo("<br><br>advisor: " . $advisor . " =? " . $advName);
 	 if ($advName == $advisor){
-	 //echo("<br>yup");
 		$advid = $row[0];
 	 }
 }
-
-//echo("<br><br> advid: " . $advid . "<br><br>");
-
-
-
-
-
-
-
-
-
-
-
-
 
 $weekdays = array(
 	0 => -1,
@@ -141,142 +125,109 @@ if (isset($_POST['fri'])) {
 	$weekdays[5]=5;
 }
 
-	
-	
-
 $sdate = date(($_POST['startdate']));
 $cdate = $sdate;
 $edate = date(($_POST['enddate']));
 
-//echo("<br>");
-
-
-$cap = array(
-	0 => ($_POST['cap0']),
-	1 => ($_POST['cap1']),
-	2 => ($_POST['cap2']),
-	3 => ($_POST['cap3']),
-	4 => ($_POST['cap4']),
-	5 => ($_POST['cap5']),
-	6 => ($_POST['cap6']),
-	7 => ($_POST['cap7']),
-	8 => ($_POST['cap8']),
-	9 => ($_POST['cap9']),
-	10 => ($_POST['cap10']),
-	11 => ($_POST['cap11']),
-	12 => ($_POST['cap12']),
-	13 => ($_POST['cap13']),
-	14 => ($_POST['cap14']),
-	15 => ($_POST['cap15']),
-);
-$majorArray = array(
-	0 => ($_POST['major0']),
-	1 => ($_POST['major1']),
-	2 => ($_POST['major2']),
-	3 => ($_POST['major3']),
-	4 => ($_POST['major4']),
-	5 => ($_POST['major5']),
-	6 => ($_POST['major6']),
-	7 => ($_POST['major7']),
-	8 => ($_POST['major8']),
-	9 => ($_POST['major9']),
-	10 => ($_POST['major10']),
-	11 => ($_POST['major11']),
-	12 => ($_POST['major12']),
-	13 => ($_POST['major13']),
-	14 => ($_POST['major14']),
-	15 => ($_POST['major15']),
-);
-
-$Tsql = "SELECT time_format(`time`,'%h:%i %p'), `time` FROM `times` WHERE 1;";
-$Trs = $COMMON->executeQuery($Tsql, $_SERVER["SCRIPT_NAME"]);
-
-$timearray = array();
-
-$count = 0;
-
-while ($trow = mysql_fetch_row($Trs)){
-	$timearray[$count]=$trow;
-	$count++;
+//if they only picked a single day in the range 
+//ignore them not checking the day of week boxes
+if($sdate==$edate){
+	$i=0;
+	while($i<6){
+		$weekdays[$i]=$i;
+		$i++;
+	}
+}
+	
+//if dates are out of order, switch them
+if($sdate>$edate){
+	$cdate=$sdate;
+	$sdate=$edate;
+	$edate=$cdate;
 }
 
+$usrErr="<p>Advisor Availability Updated</p>";
+$weekdaySum=0;
+$i=0;
+while($i<6){
+	$weekdaySum=$weekdaySum + $weekdays[$i];
+	$i++;
+}
+if($weekdaySum==-6){
+	$usrErr="<p>Please go back and select what days of the week you wish to add availability for<p>";
+}
 
-//$timearry = array(
-//	0 => '09:00:00',
-//	1 => '09:30:00',
-//	2 => "10:00:00",
-//	3 => "10:30:00",
-//	4 => "11:00:00",
-//	5 => "11:30:00",
-//	6 => "12:00:00",
-//	7 => "12:30:00",
-//	8 => "13:00:00",
-//	9 => "13:30:00",
-//	10 => "14:00:00",
-//	11 => "14:30:00",
-//	12 => "15:00:00",
-//	13 => "15:30:00",	
-//);
+$rowsPerDay= ($_POST['slotsPerDay']);
+$arrayOfChanges=array();
+$i=0;
+while($i<$rowsPerDay){
+	$arrayOfChanges[$i]=array();
+	$i++;
+}
+$i=0;
+while($i<$rowsPerDay){
+	$arrayOfChanges[$i][0]=($_POST['time'][$i]);
+	$arrayOfChanges[$i][1]=($_POST['cap'][$i]);
+	$arrayOfChanges[$i][2]=($_POST['major'][$i]);
+	$i++;
+}
 
-while($cdate < $edate){
-//echo("<br>cdate: ");
-//echo($cdate);
-		$j=1;	
-		while ($j<6){//check each weekdat
-			//echo("   <br> weekdays: ");
-			//echo($weekdays[$j]);
-			//echo(" =? ");
-			//echo((date("w", strtotime($cdate))));
-			if ($weekdays[$j]==(date("w", strtotime($cdate)))){
-				//echo("      yup");
-				$k=0;
-				while($k<16){
-					//echo("      date: ");
-					//echo($cdate);
-					//echo(" k: ");
-					//echo($k);
-					//echo(" time: ");
-					//echo($timearry[$k][0]);
-					//echo(" faketime: ");
-					//echo($timearry[$k][1]);
-					//echo("<br>");
-					//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$cdate' AND `time` = `$timearry[$k]`";
-					//$sql = "SELECT * FROM `apptTimes` WHERE `date` = '$cdate' AND `time` = '$timearry[$k]'";
-					//$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-					//$row = mysql_fetch_row($rs);
-					//$aptnum = $row[0];
-					
-					$z=$cap[$k];
-					while ($z>0){
-						//$sql = "INSERT INTO `dale2`.`appointments` (`apptNum`, `studentID`, `advisorID`) VALUES ('$aptnum', NULL, '$advid');";
-						$theTIME = $timearray[$k][1];
-						if($majorArray[$k]=='any'){
-						$sql = "INSERT INTO `dale2`.`appointments` (`date`, `time`, `advisorID`, `open`) 
-						VALUES ('$cdate', '$theTIME', '$advid', 1);";
-						}
-						else{
-						$sql = "INSERT INTO `dale2`.`appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$cdate', '$theTIME', '$advid', '$majorArray[$k]', 1);";
-						}
-						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-						$z=$z-1;
-					}
-					$k=$k+1;
-				}
+$arrayOfDates=array();
+$sql_dates = "SELECT * FROM `dates` WHERE `date` BETWEEN '$sdate' AND '$edate'";
+$rs_dates = $COMMON->executeQuery($sql_dates, $_SERVER["SCRIPT_NAME"]);
+$numOfGoodDates=0;
+while($row_dates = mysql_fetch_row($rs_dates)){
+	$j=1;	
+		while ($j<6){
+			if ($weekdays[$j]==(date("w", strtotime($row_dates[0])))){
+				$arrayOfDates[$numOfGoodDates]=$row_dates[0];
+				$numOfGoodDates++;
 			}
-			$j=$j+1;
+			$j++;
 		}
-	$cdate = date('Y-m-d', strtotime($cdate . ' + 1 day'));
+}
+	
+$i=0;
+while($i<$numOfGoodDates){
+	$j=0;
+	$cdate=$arrayOfDates[$i];
+	while($j<$rowsPerDay){
+		$ctime = $arrayOfChanges[$j][0];
+		$ccap = $arrayOfChanges[$j][1];
+		$cmaj = $arrayOfChanges[$j][2];
+		$sql = "SELECT * FROM `appointments` WHERE `date` = '$cdate' AND `time` = '$ctime' AND `advisorID` = '$advid'";
+		$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+		$oldcount=0;
+		$badMajor=0;
+		while($row = mysql_fetch_row($rs)){
+			$oldcount++;
+			if((isset($row[5]))&&($row[5]!=$cmaj)&&($badMajor!=1)){
+				$usrErr .= "<p>You tried to change the major of the appointment on ".$cdate." at ".$ctime." from ".$row[5]." to ".$cmaj." , please use the modify page to do that<p>";
+				$badMajor=1;
+			}
+		}
+		if($oldcount>$ccap){
+			$usrErr=$usrErr."<p>You tried to lower the capacity of the appointment on ".$cdate." at ".$ctime." from ".$oldcount." to ".$ccap." , please use the modify page to do that<p>";
+		}
+		while(($oldcount<$ccap)&&($badMajor!=1)){
+			if($cmaj == "any"){
+				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `open`) 
+						VALUES ('$cdate', '$ctime', '$advid', 1);";
+			}
+			else{
+				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
+						VALUES ('$cdate', '$ctime', '$advid', '$cmaj', 1);";
+			}
+			$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+			$oldcount++;
+		}
+		$j++;
+	}
+	$i++;
 }
 
 
-
-
-
-
-
-
-echo("<p>Advisor Availability Updated</p>");
+echo($usrErr);
 echo("<form action='advisorSetAvail.php' method='post' name='advAvail'>");
 echo("<button class='btn btn-sm btn-primary' type='submit' >Set More Availabilities</button>");
 echo("</form>");
