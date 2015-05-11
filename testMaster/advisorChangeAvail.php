@@ -293,7 +293,7 @@ echo("<input type='hidden' name='enddate' value='$endingDate'>");
 echo("<input type='hidden' name='advisorID' value='$advisorIdNumber'>");
 echo("<input type='hidden' name='numOfUpdates' value='$num'>");
 
-echo("<button class='btn btn-m btn-warning' type='submit' >Update Availability</button>");
+echo("<button class='btn btn-m btn-warning' type='submit' >Change Availability</button>");
 echo("</form>");
 }//endif
 
