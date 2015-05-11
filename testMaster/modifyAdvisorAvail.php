@@ -415,7 +415,7 @@ echo("</form>");
 
 if($numOfScrewedStudents>0){
 	echo("The following students were removed because they did not fit the new availability");
-	echo("<table><tr><th>Date</th><th>Time</th><th>StudentID</th><th>StudentName</th><th>Student Major</th></tr>");
+	echo("<table width='100%'><tr><th>Date </th><th>Time </th><th>StudentID </th><th>StudentName </th><th>Student Major </th></tr>");
 	$z=0;
 	//key date time stuID advID
 	while($z<$numOfScrewedStudents){
@@ -427,7 +427,7 @@ if($numOfScrewedStudents>0){
 		$sql_p = "SELECT * FROM `students` WHERE `studentID` = '$pStuID'";
 		$rs_p = $COMMON->executeQuery($sql_p, $_SERVER["SCRIPT_NAME"]);
 		while($row_p = mysql_fetch_row($rs_p)){
-			$pStuName="".$row_p[1]." ".$row_p[2]."";
+			$pStuName=" ".$row_p[1]." ".$row_p[2]." ";
 			$pStuMajor=$row_p[3];
 		}
 		echo("<tr><td>".$pDate."</td><td>".$pTime."</td><td>".$pStuID."</td><td>".$pStuName."</td><td>".$pStuMajor."</td></tr>");
