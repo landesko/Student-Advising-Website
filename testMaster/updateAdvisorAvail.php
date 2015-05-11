@@ -206,7 +206,7 @@ while($i<$numOfGoodDates){
 				$badMajor=1;
 			}
 		}
-		if($oldcount>$ccap){
+		if(($oldcount>$ccap)&&($ccap>0)){
 			$usrErr=$usrErr."<p>You tried to lower the capacity of the appointment on ".$cdate." at ".$ctime." from ".$oldcount." to ".$ccap." , please use the modify page to do that<p>";
 		}
 		while(($oldcount<$ccap)&&($badMajor!=1)){
