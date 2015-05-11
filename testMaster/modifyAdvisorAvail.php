@@ -431,6 +431,8 @@ if($numOfScrewedStudents>0){
 			$pStuMajor=$row_p[3];
 		}
 		echo("<tr><td>".$pDate."</td><td>".$pTime."</td><td>".$pStuID."</td><td>".$pStuName."</td><td>".$pStuMajor."</td></tr>");
+		$sql = "DELETE FROM `students` WHERE `studentID` = '$pStuID'";
+		$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 		$z++;
 	}	
 }
