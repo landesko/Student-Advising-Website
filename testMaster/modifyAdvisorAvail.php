@@ -81,12 +81,12 @@ session_start();
 <div class="tableBar">
 <?php
 echo("<html><head></head><body>");
-
-$debug = true;
+$myNull;
+$debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 //var_dump($_POST);
-$cancelledStudents = array();
+$cancelledStudents = array();//2d array, 2nd dim is row from appt table
 $numOfScrewedStudents=0;//hah!
 
 $advisorIdNumber= ($_POST['advisorID']);
@@ -123,54 +123,41 @@ while($i<$rowsToProcess){
 		$currentMajor=$row_capacity[5];
 		$currentCapacity++;
 	}
-	
 	if($tcap > $currentCapacity){
-		if($tmaj == $currentMajor){
-			//cap went up, major didn't change
+		if(($tmaj == $currentMajor)||(($tmaj == "any")&&($myNull == $currentMajor))){
+			//echo("<br><br>".$ttime."cap went up, major didn't change");
 			$x=0;
-			//make appts
+			//just make more appointments
 			while($x<($tcap-$currentCapacity)){
-				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
+				//can't just insert $currentMajor because sql wants literal NULL keyword, oh well
+				if($tmaj == "any"){
+					$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `open`) 
+					VALUES ('$tdate', '$ttime', '$advisorIdNumber', 1);";	
+				}
+				else{
+					$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
+					VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";	
+				}
 				$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 				$x++;
 			}
-		}//end major no change
+		}//end cap up major no change
 		else if($tmaj == "any"){
-			//cap went up, major got less restrictive
-			//change existing majors to any (null)
-			
-			//can't seem to set null, end up with text word null
-			//$sql = "UPDATE `appointments` SET `major`= NULL WHERE `date`=`$tdate` AND `time`=`$ttime` AND `adcisorID`=`$advisorIdNumber`;";
-			//$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-			
-			//get all of these apointments
-			$sql_SAVE = "SELECT * FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_SAVE = $COMMON->executeQuery($sql_SAVE, $_SERVER["SCRIPT_NAME"]);
-			
-			//delete them
-			$sql_DELETE = "DELETE FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_DELETE = $COMMON->executeQuery($sql_DEKETE, $_SERVER["SCRIPT_NAME"]);
-			
-			//put them back with "Any" (null) major
-			while($row = mysql_fetch_row($rs_SAVE)){
-				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `open`) 
-						VALUES ('$row[1]', '$row[2]', '$row[4]', 1);";
-				$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-			}
-			
-			//finaly add the new ones
+			//echo("<br><br>".$ttime."cap went up, major got less restrictive");
+			//change existing appointment's majors to any (null)
+			$sql_UPDATE = "UPDATE `appointments` SET `major` = NULL WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
+			$rs_UPDATE = $COMMON->executeQuery($sql_UPDATE, $_SERVER["SCRIPT_NAME"]);
+			//add the new ones
 			$x=0;
 			while($x<($tcap-$currentCapacity)){
-				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
+				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `open`) 
+						VALUES ('$tdate', '$ttime', '$advisorIdNumber', 1);";
 				$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 				$x++;
 			}
 		}//end major less strict
 		else{
-			//cap went up, major got more restrictive
-			
+			//echo("<br><br>".$ttime."cap up, major mroe restrictive");
 			$x=0;
 			//get all of these apointments
 			$sql_SAVE = "SELECT * FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
@@ -178,22 +165,32 @@ while($i<$rowsToProcess){
 			
 			//delete them
 			$sql_DELETE = "DELETE FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_DELETE = $COMMON->executeQuery($sql_DEKETE, $_SERVER["SCRIPT_NAME"]);
+			$rs_DELETE = $COMMON->executeQuery($sql_DELETE, $_SERVER["SCRIPT_NAME"]);
 			
 			//put back the ones that fit
 			while($row = mysql_fetch_row($rs_SAVE)){
-				if(isset($row[3])){//this apointment is taken
-					$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
-					if($tmaj == $thisStudentsMajor){//student still fits
-						$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
-						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+				if(isset($row[3])){//this apointment is taken...row[3] is stu id
+					//$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$sql_saveThisStu = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$rs_saveThisStu = $COMMON->executeQuery($sql_saveThisStu, $_SERVER["SCRIPT_NAME"]);
+					while($row_saveThisStu=mysql_fetch_row($rs_saveThisStu)){
+						$thisStudentsMajor=$row_saveThisStu[0];
+						if($tmaj == $thisStudentsMajor){//student still fits
+							$sql = "INSERT INTO `appointments` (`date`, `time`, `studentID`, `advisorID`, `major`, `open`) 
+									VALUES ('$tdate', '$ttime', '$row[3]', '$advisorIdNumber', '$tmaj', 0);";
+							$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+						}
+						else{//student out in the cold
+							$x--;//we lost a student, so need one more blank appt
+							$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
+							$numOfScrewedStudents++;
+						}
 					}
-					else{//student out in the cold
-						$x--;//we lost a student, so need one more blank appt
-						$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
-						$numOfScrewedStudents++;
-					}
+				}
+				else{//no student in this appointment, just put it back in
+					$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
+							VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
+					$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 				}
 			}
 			
@@ -207,37 +204,53 @@ while($i<$rowsToProcess){
 		}//end major more strict
 	}//end cap increased
 	else if($tcap == $currentCapacity){
-		//cap the same
-		if($tmaj == $currentMajor){
+		if(($tmaj == $currentMajor)||(($tmaj == "any")&&($myNull == $currentMajor))){
+			//echo("<br><br>".$ttime."cap the same, major the same");
 			//do nothing
 		}//end major no change
 		else if($tmaj == "any"){
-			//also do nothing
+			//echo("<br><br>".$ttime."cap the same, major less strict");
+			//change existing majors to any (null)
+			$sql_UPDATE = "UPDATE `appointments` SET `major` = NULL WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
+			$rs_UPDATE = $COMMON->executeQuery($sql_UPDATE, $_SERVER["SCRIPT_NAME"]);
 		}//end major less strict
 		else{
+			//echo("<br><br>".$ttime."cap the same, major more strict");
 			$x=0;
 			//get all of these apointments
 			$sql_SAVE = "SELECT * FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
 			$rs_SAVE = $COMMON->executeQuery($sql_SAVE, $_SERVER["SCRIPT_NAME"]);
 			//delete them
 			$sql_DELETE = "DELETE FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_DELETE = $COMMON->executeQuery($sql_DEKETE, $_SERVER["SCRIPT_NAME"]);
+			$rs_DELETE = $COMMON->executeQuery($sql_DELETE, $_SERVER["SCRIPT_NAME"]);
+			
 			//put back the ones that fit
 			while($row = mysql_fetch_row($rs_SAVE)){
-				if(isset($row[3])){//this apointment is taken
-					$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
-					if($tmaj == $thisStudentsMajor){//student still fits
-						$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
-						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-					}
-					else{//student out in the cold
-						$x--;//we lost a student, so need one more blank appt
-						$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
-						$numOfScrewedStudents++;
+				if(isset($row[3])){//this apointment is taken...row[3] is stu id
+					//$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$sql_saveThisStu = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$rs_saveThisStu = $COMMON->executeQuery($sql_saveThisStu, $_SERVER["SCRIPT_NAME"]);
+					while($row_saveThisStu=mysql_fetch_row($rs_saveThisStu)){
+						$thisStudentsMajor=$row_saveThisStu[0];
+						if($tmaj == $thisStudentsMajor){//student still fits
+							$sql = "INSERT INTO `appointments` (`date`, `time`, `studentID`, `advisorID`, `major`, `open`) 
+									VALUES ('$tdate', '$ttime', '$row[3]', '$advisorIdNumber', '$tmaj', 0);";
+							$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+						}
+						else{//student out in the cold
+							$x--;//we lost a student, so need one more blank appt
+							$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
+							$numOfScrewedStudents++;
+						}
 					}
 				}
+				else{//no student in this appointment, just put it back in
+					$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
+							VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
+					$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+				}
 			}
+			
 			//make empty appts in place of anyone we kicked out
 			while($x<0){
 				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
@@ -248,7 +261,8 @@ while($i<$rowsToProcess){
 		}//end major more strict
 	}//end cap same
 	else{//cap went down
-		if($tmaj == $currentMajor){
+		if(($tmaj == $currentMajor)||(($tmaj == "any")&&($myNull == $currentMajor))){
+			//echo("<br><br>".$ttime."cap down, major the same");
 			//cap went down, major didn't change
 			$x=$tcap;
 			//get all of these apointments
@@ -256,90 +270,128 @@ while($i<$rowsToProcess){
 			$rs_SAVE = $COMMON->executeQuery($sql_SAVE, $_SERVER["SCRIPT_NAME"]);
 			//delete them
 			$sql_DELETE = "DELETE FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_DELETE = $COMMON->executeQuery($sql_DEKETE, $_SERVER["SCRIPT_NAME"]);
+			$rs_DELETE = $COMMON->executeQuery($sql_DELETE, $_SERVER["SCRIPT_NAME"]);
 			//put back the ones that fit
 			while($row = mysql_fetch_row($rs_SAVE)){
-				if((isset($row[3]))&&($x>0)){//this apointment is taken AND there's room for this guy
-					$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
-					if($tmaj == $thisStudentsMajor){//student still fits, unneeded
-						$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `studentID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', '$tmaj', 1);";
-						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-						$x++;
+				if((isset($row[3]))){
+					$sql_saveThisStu = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$rs_saveThisStu = $COMMON->executeQuery($sql_saveThisStu, $_SERVER["SCRIPT_NAME"]);
+					while($row_saveThisStu=mysql_fetch_row($rs_saveThisStu)){
+						$thisStudentsMajor=$row_saveThisStu[0];
+						if((($tmaj == $thisStudentsMajor)||($tmaj == "any"))&&($x>0)){
+							if($tmaj == "any"){
+								$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `studentID`, `open`) 
+										VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', 0);";
+							}
+							else{
+								$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `studentID`, `major`, `open`) 
+										VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', '$tmaj', 0);";
+							}
+							$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+							$x--;
+						}
+						else{//student out in the cold
+							$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
+							$numOfScrewedStudents++;
+						}
 					}
-					else{//student out in the cold
-						$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
-						$numOfScrewedStudents++;
-					}
+				}
+				else{//appt was blank
+					//do nothing so that no blank appt takes precedence over any filled one
 				}
 			}
 			while($x>0){
-				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
-						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-				$x++;
+				if($tmaj == "any"){
+					$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `open`) 
+							VALUES ('$tdate', '$ttime', '$advisorIdNumber', 1);";	
+				}
+				else{
+					$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
+							VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
+				}
+				$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
+				$x--;
 			}
 		}//end major no change
 		else if($tmaj == "any"){
+			//echo("<br><br>".$ttime."cap down, major less restrictive");
 			$x=$tcap;
 			//get all of these apointments
 			$sql_SAVE = "SELECT * FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
 			$rs_SAVE = $COMMON->executeQuery($sql_SAVE, $_SERVER["SCRIPT_NAME"]);
 			//delete them
 			$sql_DELETE = "DELETE FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_DELETE = $COMMON->executeQuery($sql_DEKETE, $_SERVER["SCRIPT_NAME"]);
+			$rs_DELETE = $COMMON->executeQuery($sql_DELETE, $_SERVER["SCRIPT_NAME"]);
 			//put back the ones that fit
 			while($row = mysql_fetch_row($rs_SAVE)){
-				if((isset($row[3]))&&($x>0)){//this apointment is taken AND there's room for this guy
-					$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
-					if($tmaj == $thisStudentsMajor){//student still fits, unneeded
-						$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `studentID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', '$tmaj', 1);";
+				if((isset($row[3]))){//this apointment is taken AND there's room for this guy
+					//$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$sql_saveThisStu = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$rs_saveThisStu = $COMMON->executeQuery($sql_saveThisStu, $_SERVER["SCRIPT_NAME"]);
+					while($row_saveThisStu=mysql_fetch_row($rs_saveThisStu)){
+						$thisStudentsMajor=$row_saveThisStu[0];
+						if($x>0){
+						$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `studentID`, `open`) 
+								VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', 0);";
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-						$x++;
+						$x--;
+						}
+						else{//student out in the cold
+							$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
+							$numOfScrewedStudents++;
+						}
 					}
-					else{//student out in the cold
-						$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
-						$numOfScrewedStudents++;
-					}
+					
+				}
+				else{
+					//do nothing, appt was blank, save for real student
 				}
 			}
 			while($x>0){
-				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
+				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `open`) 
+						VALUES ('$tdate', '$ttime', '$advisorIdNumber', 1);";
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-				$x++;
+				$x--;
 			}
 		}//end major less strict
 		else{
+			//echo("<br><br>".$ttime."cap down, major more restrictive");
 			$x=$tcap;
 			//get all of these apointments
 			$sql_SAVE = "SELECT * FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
 			$rs_SAVE = $COMMON->executeQuery($sql_SAVE, $_SERVER["SCRIPT_NAME"]);
 			//delete them
 			$sql_DELETE = "DELETE FROM `appointments` WHERE `date` = '$tdate' AND `time` = '$ttime' AND `advisorID` = '$advisorIdNumber'";
-			$rs_DELETE = $COMMON->executeQuery($sql_DEKETE, $_SERVER["SCRIPT_NAME"]);
+			$rs_DELETE = $COMMON->executeQuery($sql_DELETE, $_SERVER["SCRIPT_NAME"]);
 			//put back the ones that fit
 			while($row = mysql_fetch_row($rs_SAVE)){
-				if((isset($row[3]))&&($x>0)){//this apointment is taken AND there's room for this guy
-					$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
-					if($tmaj == $thisStudentsMajor){//student still fits, unneeded
+				if((isset($row[3]))){//this apointment is taken AND there's room for this guy
+					//$thisStudentsMajor = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$sql_saveThisStu = "SELECT `major` FROM `students` WHERE `studentID` = '$row[3]';";
+					$rs_saveThisStu = $COMMON->executeQuery($sql_saveThisStu, $_SERVER["SCRIPT_NAME"]);
+					while($row_saveThisStu=mysql_fetch_row($rs_saveThisStu)){
+						$thisStudentsMajor=$row_saveThisStu[0];
+						if(($tmaj == $thisStudentsMajor)&&($x>0)){
 						$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `studentID`, `major`, `open`) 
-						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', '$tmaj', 1);";
+								VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$row[3]', '$tmaj', 0);";
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-						$x++;
+						$x--;
+						}
+						else{//student out in the cold
+							$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
+							$numOfScrewedStudents++;
+						}
 					}
-					else{//student out in the cold
-						$cancelledStudents[$numOfScrewedStudents]=$row;//email these guys
-						$numOfScrewedStudents++;
-					}
+				}
+				else{
+					//again nothing, save for real students
 				}
 			}
 			while($x>0){
 				$sql = "INSERT INTO `appointments` (`date`, `time`, `advisorID`, `major`, `open`) 
 						VALUES ('$tdate', '$ttime', '$advisorIdNumber', '$tmaj', 1);";
 						$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
-				$x++;
+				$x--;
 			}
 			}//end major more strict
 	}//end cap down
@@ -360,6 +412,29 @@ echo("</form>");
 echo("<form action='advisorHome.php' method='post' name='advAvail'>");
 echo("<button class='btn btn-sm btn-primary' type='submit' >Back To Advisor Home</button>");
 echo("</form>");
+
+if($numOfScrewedStudents>0){
+	echo("The following students were removed because they did not fit the new availability");
+	echo("<table><tr><th>Date</th><th>Time</th><th>StudentID</th><th>StudentName</th><th>Student Major</th></tr>");
+	$z=0;
+	//key date time stuID advID
+	while($z<$numOfScrewedStudents){
+		$pDate=$cancelledStudents[$z][1];
+		$pTime=$cancelledStudents[$z][2];
+		$pStuID=$cancelledStudents[$z][3];
+		$pStuName;
+		$pStuMajor;
+		$sql_p = "SELECT * FROM `students` WHERE `studentID` = '$pStuID'";
+		$rs_p = $COMMON->executeQuery($sql_p, $_SERVER["SCRIPT_NAME"]);
+		while($row_p = mysql_fetch_row($rs_p)){
+			$pStuName="".$row_p[1]." ".$row_p[2]."";
+			$pStuMajor=$row_p[3];
+		}
+		echo("<tr><td>".$pDate."</td><td>".$pTime."</td><td>".$pStuID."</td><td>".$pStuName."</td><td>".$pStuMajor."</td></tr>");
+		$z++;
+	}	
+}
+
 ?>
 
 </div>
