@@ -131,7 +131,8 @@ while($row = mysql_fetch_row($rs)){
 					$stuName=$row3[1] . " " . $row3[2];
 					if ($row2[3]==null){
 						$stuName="No Student";
-						$stuID="867-5309";
+						//$stuID="867-5309";
+						$stuID=" ";
 						$rowColor++;
 						if (isset($row2[5])){
 							$stuMaj="open to ".$row2[5]." students";
