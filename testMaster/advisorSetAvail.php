@@ -104,6 +104,15 @@ while ($trow = mysql_fetch_row($Trs)){
 	$count++;
 }
 
+$goodTimes = array();
+$sql_GT = "SELECT * FROM `times` ";
+$rs_GT = $COMMON->executeQuery($sql_GT, $_SERVER["SCRIPT_NAME"]);
+$gt_count=0;
+while($row_gt=mysql_fetch_row($rs_GT)){
+	$goodTimes[$gt_count]=$row_gt[0];
+	$gt_count++;
+}
+
 echo("<form action='updateAdvisorAvail.php' method='post' name='form1'>");
 echo("<select name='advisor'>");
 
@@ -154,7 +163,9 @@ echo("<table width='100%'><tr><th>Start Time</th><th>Capacity</th><th>Major</th>
 
 while($num < $count){
 	echo("<tr><td>"); echo($array[$num][0]); echo("</td><td>");
-	echo("<select name='cap$num'>");
+	$curTime = $goodTimes[$num];
+	echo("<input type='hidden' name='time[$num]' value='$curTime'>");
+	echo("<select name='cap[$num]'>");
 	$i=0;
 	while($i<11){
 		echo("<option value='");
@@ -175,7 +186,7 @@ while($num < $count){
 	}
 	echo("</select>");
 	echo("</td><td>");
-	echo("<select name='major$num'><option value=any>any</option>");
+	echo("<select name='major[$num]'><option value=any>any</option>");
 	$rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 	while($row = mysql_fetch_row($rs)){
 		$maj=$row[0];
@@ -189,7 +200,7 @@ while($num < $count){
 }
 
 echo("</table>");
-
+echo("<input type='hidden' name='slotsPerDay' value='$num'>");
 echo("<button class='btn btn-sm btn-primary' type='submit' >Update Availability</button>");
 echo("</form>");
 
