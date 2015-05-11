@@ -62,7 +62,7 @@ session_start();
           <ul class="dropdown-menu" role="menu">
             <li><a href="advisorSetAvail.php">Add Availability</a></li>
             <li class="divider"></li>
-            <li><a href="advisorChangeAvail.php">Remove Availability</a></li>
+            <li><a href="advisorChangeAvail.php">Edit Availability</a></li>
             <li class="divider"></li>
             <li><a href="advisorHome.php">Home</a></li>
             <li class="divider"></li>

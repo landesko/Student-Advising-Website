@@ -52,22 +52,26 @@ session_start();
     <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
-            <img class="navbar-brand"  src="res/logo.png" >
-                
+            <img class="navbar-brand"  src="res/logo.png" >      
         </div>
         <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Menu <span class="caret"></span></a>
           <ul class="dropdown-menu" role="menu">
-            <li><a href="http://coeit.umbc.edu/undergraduate-student-services-engineering-and-computer-science-majors">Advising Info</a></li>
+            <li><a href="advisorSetAvail.php">Add Availability</a></li>
             <li class="divider"></li>
-            <li><a href="css/studentIndex.php">Log Out</a></li>
+            <li><a href="advisorChangeAvail.php">Edit Availability</a></li>
+            <li class="divider"></li>
+            <li><a href="advisorHome.php">Home</a></li>
+            <li class="divider"></li>
+            <li><a href="advisorIndex.php">Log Out</a></li>
           </ul>
         </li>
       </ul>
       <div class="titleBar">
-             <h2>COEIT Student Advising Web Page</h2>
+             <h2>COEIT Advisor Home Page</h2>
       </div>
+       
     </div>
   </nav>
   
