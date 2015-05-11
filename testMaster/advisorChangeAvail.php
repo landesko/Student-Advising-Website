@@ -95,6 +95,13 @@ $debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 
+if(isset($_POST['advisor'])){
+	//keeping these to make the name and dates sticky when page redrawn when view button hit
+	$stickStartDate = ($_POST['startdate']);
+	$stickEndDate = ($_POST['enddate']);
+	$stickAdvName = ($_POST['advisor']);
+}
+
 $advName;
 $advFullName;
 $advFName;
@@ -121,8 +128,14 @@ while($row = mysql_fetch_row($rs))
 {
      $advFullName=$row[0].$space.$row[1];
      $advName=$row[0] . " " . $row[1];
-     echo("<option value='");
-     echo("$advName'");
+	 if($stickAdvName == $advName){
+		echo("<option value='");
+		echo("$advName' selected");
+	}
+	else{
+		echo("<option value='");
+		echo("$advName'");
+	}
      echo(">" . $advName . "</option>");
 }
 echo("</select>");
@@ -132,8 +145,14 @@ $sql = "select date from dates";
 $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 echo("<select name='startdate'>");
 while($row = mysql_fetch_row($rs)){
-	echo("<option value='");
-	echo("$row[0]'");
+	if($stickStartDate == $row[0]){
+		echo("<option value='");
+		echo("$row[0]' selected");
+	}
+	else{
+		echo("<option value='");
+		echo("$row[0]'");
+	}
 	echo(">" . $row[0] . "</option>");
 }
 echo("</select>");
@@ -142,8 +161,14 @@ $sql = "select date from dates";
 $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 echo("<select name='enddate'>");
 while($row = mysql_fetch_row($rs)){
-	echo("<option value='");
-	echo("$row[0]'");
+	if($stickEndDate == $row[0]){
+		echo("<option value='");
+		echo("$row[0]' selected");
+	}
+	else{
+		echo("<option value='");
+		echo("$row[0]'");
+	}
 	echo(">" . $row[0] . "</option>");
 }
 echo("</select>");
@@ -159,6 +184,11 @@ if(isset($_POST['advisor'])){
 
 	$startingDate = ($_POST['startdate']);
 	$endingDate = ($_POST['enddate']);
+	if($startingDate > $endingDate){
+		$temp = $startingDate;
+		$startingDate = $endingDate;
+		$endingDate = $temp;
+	}
 
 	$advisorFullName = ($_POST['advisor']);
 	$advisorIdNumber;
@@ -193,6 +223,8 @@ if(isset($_POST['advisor'])){
 			$currentTime = $row_times[0];
 			echo("<tr>");
 			echo("<td>".$currentTime."</td>");
+			echo("<input type='hidden' name='date[$num]' value='$currentDate'>");
+			echo("<input type='hidden' name='time[$num]' value='$currentTime'>");
 			//SELECT *FROM `appointments`WHERE `date` = '2015-04-20'AND `time` = '08:00:00'AND `advisorID` = 'AA12345'
 			//$sql_capacity = "SELECT COUNT(*) as foo FROM `appointments` WHERE `date` = '$currentDate' AND `time` = '$currentTime' AND `advisorID` = '$advisorIdNumber'";
 			//$sql_capacity = "select count(`key`) from `appointments` where `date` = $currentDate and `time` = $currentTime and `advisorID` = $advisorIdNumber";
@@ -206,7 +238,7 @@ if(isset($_POST['advisor'])){
 				$currentCapacity++;
 			}
 			echo("<td>");
-			echo("<select name='cap$num'>");
+			echo("<select name='cap[$num]'>");
 			$i=0;
 			while($i<11){
 				if($i == $currentCapacity){
@@ -233,7 +265,7 @@ if(isset($_POST['advisor'])){
 			
 			$sql_majors = "SELECT * FROM `majors`";
 			$rs_majors = $COMMON->executeQuery($sql_majors, $_SERVER["SCRIPT_NAME"]);
-			echo("<select name='major$num'><option value=any>any</option>");
+			echo("<select name='major[$num]'><option value=any>any</option>");
 			while($row_maj = mysql_fetch_row($rs_majors)){
 				$maj=$row_maj[0];
 				if($maj == $currentMajor){
@@ -259,6 +291,7 @@ if(isset($_POST['advisor'])){
 echo("<input type='hidden' name='startdate' value='$startingDate'>");
 echo("<input type='hidden' name='enddate' value='$endingDate'>");
 echo("<input type='hidden' name='advisorID' value='$advisorIdNumber'>");
+echo("<input type='hidden' name='numOfUpdates' value='$num'>");
 
 echo("<button class='btn btn-m btn-warning' type='submit' >Update Availability</button>");
 echo("</form>");
