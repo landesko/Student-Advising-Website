@@ -96,7 +96,7 @@ session_start();
 	
 	
 	
-	echo("$fname $lname, your appointment with ");
+	echo("<b>$fname $lname</b>, your appointment with ");
 			
 			//pulls appointment info from `appointments`
 			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
@@ -108,9 +108,9 @@ session_start();
 			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
 			
-		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
+		echo("<b>$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
-		echo("$fetchGetAppt[1] at $fetchGetAppt[0] has successfully been deleted. To create a new appointment please click the button below to view appointment times.<br><br>");
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0]</b> has successfully been deleted. To create a new appointment please click the button below to view appointment times.<br><br>");
 	
 	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentID'";
 	$rsRemove = $COMMON->executeQuery($removeAppt,$_SERVER["SCRIPT_NAME"]);

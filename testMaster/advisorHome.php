@@ -1,6 +1,7 @@
 <?php
 
 session_start();
+
 ?>
 
 <html>
@@ -41,7 +42,7 @@ session_start();
    <!-- Timetable Style -->
   <link href="css/timetable.css" rel="stylesheet">
     
-    <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="icon" type="image/png" href="icon.png" />
     
    
 </head>
@@ -86,8 +87,21 @@ session_start();
 	include('CommonMethods.php');
 	$COMMON = new Common($debug); // common methods
 	
-	$date = ($_POST['date']);
-	$_SESSION['date'] = $date;
+	if($_POST['date'] != NULL)
+	{
+		$date = ($_POST['date']);
+		$_SESSION['date'] = $date;
+	}
+	else if ($_SESSION['date'] != NULL)
+	{
+		$date = $_SESSION['date'];
+		$_SESSION['date'] = $date;	
+	}
+	else
+	{
+		$date = "2015-03-02";
+		$_SESSION['date'] = $date;
+	}
 	
 	$advisingArray = array();
 	
@@ -110,18 +124,12 @@ session_start();
 	//$_SESSION['major'] = $major;
 	$_SESSION['date'] = $date;
 
-    $sqlDate;
+    $sqlDate = $date;
 	
-		if ($date == NULL)
-		  {
-			$sqlDate = "2015-03-02";
-		  }
-		else
-		  {
-			$sqlDate = $date;
-		  }
+	
+		
 		  
-		echo("Welcome advisor, $advFname $advLname, to the Advisor Home Page.<br><br>");
+		echo("Welcome advisor, <b>$advFname $advLname</b>, to the Advisor Home Page.<br><br>");
 		
 		//displays range that you must choose dates from
 		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `dates` WHERE `date` = '$sqlDate' LIMIT 1";
@@ -179,7 +187,7 @@ session_start();
 	echo("</div><div class='rightContainer'>");
 	
 		//SEARCH FOR STUDENT ID
-		echo("To look up info on a student and / or delete their appointment please enter a valid student ID. (<a HREF='javascript:history.go(0)'>Refresh</a> page after deletions.)<br>");
+		echo("To look up info on a student and / or delete their appointment please enter a valid student ID. (<a href='advisorHome.php'>Refresh</a> page after deletions.)<br>");
 		
 		echo("<form class='form-inline' action = 'studentInfo.php' target='_blank' method ='post'>
         <label for='inputStudentID' class='sr-only'>Search For Student</label>

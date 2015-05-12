@@ -99,7 +99,7 @@ session_start();
 	  $studentMajor = $studentInfoArray[2];
 	
 	
-	echo("Student, $studentFname $studentLname's, appointment with ");
+	echo("Student, <b>$studentFname $studentLname's</b>, appointment with ");
 			
 			//pulls appointment info from `appointments`
 			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentIDforDelete'";
@@ -111,9 +111,9 @@ session_start();
 			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
 			
-		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
+		echo("<b>$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
-		echo("$fetchGetAppt[1] at $fetchGetAppt[0] has successfully been deleted.");
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0]</b> has successfully been deleted.");
 	
 	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentIDforDelete'";
 	$rsRemove = $COMMON->executeQuery($removeAppt,$_SERVER["SCRIPT_NAME"]);

@@ -113,14 +113,14 @@ session_start();
 	$sqlAddStudent = "INSERT INTO `students`(`studentID`, `fname`, `lname`, `major`) VALUES ('$studentID','$fname','$lname','$major')";
 	$rs3 = $COMMON->executeQuery($sqlAddStudent,$_SERVER["SCRIPT_NAME"]);
 	
-	echo("Thank you, $fname $lname, for using the Student Advising Web Page. You have successfully made an appointment with $fetchAdvisorName[0] $fetchAdvisorName[1] on ");
+	echo("Thank you, <b>$fname $lname</b>, for using the Student Advising Web Page. You have successfully made an appointment with <b>$fetchAdvisorName[0] $fetchAdvisorName[1] on</b> ");
 	
 	//pull information about the appointment from `appointments`
 	$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
 			$rsGetAppt = $COMMON->executeQuery($getAppt,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAppt = mysql_fetch_row($rsGetAppt);
 
-	echo("$fetchGetAppt[1] at $fetchGetAppt[0]. If you made a mistake and need to cancel this appointment please click the remove button below.<br><br>");
+	echo("<b>$fetchGetAppt[1] at $fetchGetAppt[0].</b> If you made a mistake and need to cancel this appointment please click the remove button below.<br><br>");
 	
 	echo("<form action='removeStudent.php' method='post' name='Form2'>");
 		echo("<button class='btn btn-lg btn-danger' type='submit' >Remove Appt.</button></form>");

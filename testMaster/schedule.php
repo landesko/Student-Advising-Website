@@ -121,7 +121,7 @@ session_start();
 	//if student made the appointment a message is displayed detailing appt info
 	if ( $fetchIsAppt != NULL)
 	{
-		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br>
+		echo("Welcome, <b>$fname $lname</b>, to the Student Advising Web Page.<br>
 			You have already made an appointment with ");
 			
 			$getAppt = "SELECT TIME_FORMAT(`time` , '%h:%i %p'),  DATE_FORMAT(  `date` ,  '%W %b. %d, %Y' ), `advisorID` FROM `appointments` WHERE `studentID` = '$studentID'";
@@ -132,11 +132,11 @@ session_start();
 			$rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
 			$fetchGetAdv = mysql_fetch_row($rsGetAdv);
 			
-		echo("$fetchGetAdv[0] $fetchGetAdv[1] on ");
+		echo("<b>$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
 		
 		//Link to delete appt - TOBEADDED
-		echo("$fetchGetAppt[1] at $fetchGetAppt[0]. If you need to cancel this appointment please click the remove button below.<br> <br>");
+		echo("$fetchGetAppt[1] at $fetchGetAppt[0]</b>. If you need to cancel this appointment please click the remove button below.<br> <br>");
 		
 		echo("<form action='removeStudent.php' method='post' name='Form2'>");
 		echo("<button class='btn btn-lg btn-danger' type='submit' >Remove Appt.</button></form>");
@@ -159,7 +159,7 @@ session_start();
 			$sqlDate = $date;
 		  }
 		  
-		echo("Welcome, $fname $lname, to the Student Advising Web Page.<br><br>");
+		echo("Welcome, <b>$fname $lname</b>, to the Student Advising Web Page.<br><br>");
 		
 		//displays range that you must choose dates from
 		$sqlIsWeekDay = "SELECT DATE_FORMAT(  `date` ,  '%W, %b. %d, %Y' ) FROM `dates` WHERE `date` = '$sqlDate' LIMIT 1";

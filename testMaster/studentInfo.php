@@ -126,7 +126,7 @@ if ($fetchIsAppt[0] == NULL)
 else
 {
 
-	  echo("<br>Student ID: $studentIDlookup corresponds to $studentFname $studentLname, whose major is $studentMajor.<br>");
+	  echo("<br>Student ID: <b>$studentIDlookup</b> corresponds to <b>$studentFname $studentLname</b>, whose major is <b>$studentMajor.</b><br>");
 	  
 	  //if student made the appointment a message is displayed detailing appt info
 	  if ( $fetchIsAppt != NULL)
@@ -139,8 +139,8 @@ else
 		  $rsGetAdv = $COMMON->executeQuery($getAdvisorName,$_SERVER["SCRIPT_NAME"]);
 		  $fetchGetAdv = mysql_fetch_row($rsGetAdv);
 		  
-		echo("The student has an appointment with $fetchGetAdv[0] $fetchGetAdv[1] on ");
-		echo("$fetchGetAppt[1] at $fetchGetAppt[0].");
+		echo("The student has an appointment with <b>$fetchGetAdv[0] $fetchGetAdv[1] on</b> ");
+		echo("<b>$fetchGetAppt[1] at $fetchGetAppt[0]</b>.");
 		
 		echo("<br><br>Click below if you would like to remove this students appointment: <br>");
 		

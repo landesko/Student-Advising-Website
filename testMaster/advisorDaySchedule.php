@@ -1,7 +1,3 @@
-<?php
-
-session_start();
-?>
 
 <html>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
@@ -64,12 +60,14 @@ $debug = false;
 include('CommonMethods.php');
 $COMMON = new Common($debug); // common methods
 
-var_dump(($_POST['advName']));
-
 $scheduleInfo = explode(" ", ($_POST['advName']));
 
 $advName = $scheduleInfo[0]. " " .$scheduleInfo[1] ;
 $theDate = $scheduleInfo[2];
+
+echo("<div class='titleBar'>
+<h2>This Week's Schedule For $advName</h2>
+</div>");
 
 echo("<br><br>");
 echo("$advName<br>");
@@ -117,10 +115,10 @@ while($row = mysql_fetch_row($rs)){
 						$stuID=" ";
 						$rowColor++;
 						if (isset($row2[5])){
-							$stuMaj="open to ".$row2[5]." students";
+							$stuMaj="Open to ".$row2[5]." students";
 						}
 						else{
-							$stuMaj="open to any tech student";
+							$stuMaj="Open to any tech student";
 						}
 					}
 					if($lasttime == $row2[2]){
