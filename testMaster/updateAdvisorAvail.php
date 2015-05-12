@@ -199,12 +199,12 @@ while($i<$numOfGoodDates){
 		while($row = mysql_fetch_row($rs)){
 			$oldcount++;
 			if((isset($row[5]))&&($row[5]!=$cmaj)&&($badMajor!=1)){
-				$usrErr .= "<p>You tried to change the major of the appointment on ".$cdate." at ".$ctime." from ".$row[5]." to ".$cmaj." , please use the modify page to do that<p>";
+				$usrErr .= "<p>You tried to change the major of the appointment on ".$cdate." at ".$ctime." from ".$row[5]." to ".$cmaj.", please use the modify page to do that<p>";
 				$badMajor=1;
 			}
 		}
 		if(($oldcount>$ccap)&&($ccap>0)){
-			$usrErr=$usrErr."<p>You tried to lower the capacity of the appointment on ".$cdate." at ".$ctime." from ".$oldcount." to ".$ccap." , please use the modify page to do that<p>";
+			$usrErr=$usrErr."<p>You tried to lower the capacity of the appointment on ".$cdate." at ".$ctime." from ".$oldcount." to ".$ccap.", please use the modify page to do that<p>";
 		}
 		while(($oldcount<$ccap)&&($badMajor!=1)){
 			if($cmaj == "any"){
