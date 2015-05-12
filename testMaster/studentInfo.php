@@ -88,10 +88,6 @@ session_start();
   $studentIDlookup = ($_POST['studentID']);	
   $_SESSION['studentIDforDelete'] = $studentIDlookup;
 
-  //$studentID =($_SESSION['studentID']);
-  // TODO:temp
-  //$studentID = "VT25650";
-
   // query student info
   $sql = "SELECT `fname`, `lname`,`major` FROM `students` WHERE `studentID` = '$studentIDlookup'";
   $rs = $COMMON->executeQuery($sql,$_SERVER["SCRIPT_NAME"]);
@@ -107,11 +103,7 @@ session_start();
 
   // query 
 
-  /*
-  var_dump($studentFname);
-  var_dump($studentLname);
-  var_dump($studentMajor);
-  */
+ 
 
   //checks to see if student already made an appointment
   $madeAppt = "SELECT `studentID` FROM `appointments` WHERE `studentID` = '$studentIDlookup'";
@@ -151,9 +143,7 @@ else
 		echo("The student does not currently have an appointment.");
 	  }
 }
-
-//echo("<input type='button' value='Close this window' onclick='windowClose()'>");
-
+//otherwise close window
 echo("<div class='no-print'>");
 echo("Otherwise: <br><button class='btn btn-m btn-warning' type='button' onclick='windowClose()' >Close This Window</button>");
 echo("</div>");

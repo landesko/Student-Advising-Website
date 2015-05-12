@@ -111,7 +111,7 @@ session_start();
 		echo("<b>$fetchGetAdv[0] $fetchGetAdv[1] on ");
 		
 		echo("$fetchGetAppt[1] at $fetchGetAppt[0]</b> has successfully been deleted. To create a new appointment please click the button below to view appointment times.<br><br>");
-	
+	//removes students from students and updates appointments
 	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentID'";
 	$rsRemove = $COMMON->executeQuery($removeAppt,$_SERVER["SCRIPT_NAME"]);
 	

@@ -94,6 +94,7 @@ else{
 	$sql = "SELECT * FROM `advisors` WHERE `advisorID` = '$advID'";
 }
 
+//table display
 $rs = $COMMON->executeQuery($sql, $_SERVER["SCRIPT_NAME"]);
 echo("<div class='container'>");//
 while($row = mysql_fetch_row($rs)){

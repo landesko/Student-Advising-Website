@@ -80,13 +80,6 @@ session_start();
 <div class="container">
 <div class="tableBar">
 
-
-
-
-
-
-
-
 <?php
 
 echo("<html><head><title></title>Edit Appointments For:</head><body>");

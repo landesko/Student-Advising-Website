@@ -121,7 +121,6 @@ session_start();
 	$_SESSION['advisorID'] = $advisorID;
 	$_SESSION['advFname'] = $advFname;
 	$_SESSION['advLname'] = $advLname;
-	//$_SESSION['major'] = $major;
 	$_SESSION['date'] = $date;
 
     $sqlDate = $date;
@@ -267,10 +266,6 @@ session_start();
 		
 			<!--  echo advisor names in th tag here-->
 			<tbody>");
-		   
-	
-			
-				// date('w',srttotime());
 	
 			  // time info
 			  $apptTimeSql = "SELECT TIME_FORMAT(`time`, '%h:%i %p'), `time` FROM `times` WHERE 1";
@@ -319,6 +314,7 @@ session_start();
 						 {
 						 $getStudentNames = "Select `fname`, `lname` FROM `students` WHERE `studentID` = '$fetchStudentIDs[0]'";
 						 $getName = $COMMON->executeQuery($getStudentNames,$_SERVER["SCRIPT_NAME"]);
+						 //displays student IDS and names
 						 $fetchStudentNames = mysql_fetch_row($getName);
 						  echo("$fetchStudentIDs[0] - $fetchStudentNames[0] $fetchStudentNames[1]<br>");
 						 }
@@ -333,6 +329,7 @@ session_start();
 					  $majorRs = $COMMON->executeQuery($getMajor,$_SERVER["SCRIPT_NAME"]);
 					  	$fetchMajor = mysql_fetch_row($majorRs);
 					  
+					  //displays addtl appt. info
 					  if ($group > 1)
 					  {
 						echo("Group Appt<br>Slots Open = $numNull of $group<br>");

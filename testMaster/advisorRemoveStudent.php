@@ -115,6 +115,7 @@ session_start();
 		
 		echo("$fetchGetAppt[1] at $fetchGetAppt[0]</b> has successfully been deleted.");
 	
+	//updates appointments and deletes student from students
 	$removeAppt = "UPDATE `appointments` SET `studentID` = NULL, `open` = 1 WHERE `studentID` = '$studentIDforDelete'";
 	$rsRemove = $COMMON->executeQuery($removeAppt,$_SERVER["SCRIPT_NAME"]);
 	
