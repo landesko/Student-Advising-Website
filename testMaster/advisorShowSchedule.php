@@ -64,10 +64,12 @@ echo("<div class='titleBar'>
 <h2>This Week's Schedule For $advisorShow</h2>
 </div>");
 
+
+
 $thisMonday = date('2015-04-20');;
-//while(date('w', $thisMonday)>1){
-//$thisMonday = date('Y-m-d', strtotime($thisMonday . ' - 1 day'));
-//}
+//static week chosen for demo, uncomment this line to change back
+//$thisMonday = date('Y-m-d', strtotime('last Monday', strtotime('tomorrow')));
+//
 $thisFriday = $thisMonday;
 for($i=0;$i<6;$i++){
 	$thisFriday = date('Y-m-d', strtotime($thisFriday . ' + 1 day'));
