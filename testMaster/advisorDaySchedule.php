@@ -66,12 +66,12 @@ $advName = $scheduleInfo[0]. " " .$scheduleInfo[1] ;
 $theDate = $scheduleInfo[2];
 
 echo("<div class='titleBar'>
-<h2>This Week's Schedule For $advName</h2>
+<h2>Today's Schedule For $advName</h2>
 </div>");
 
 echo("<br><br>");
-echo("$advName<br>");
-echo("$theDate");//2015-3-11
+//echo("$advName<br>");
+//echo("$theDate");//2015-3-11
 $curDay=$theDate;
 
 
